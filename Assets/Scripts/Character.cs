@@ -19,6 +19,10 @@ public class Character : MonoBehaviour
     public enum Type { Test, Water, Fire };
     public Type type;
 
+    int effectPower;
+    //int damage;
+    //int defend;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +54,32 @@ public class Character : MonoBehaviour
                 transform.Translate((Vector2.left / 10) * speed);
             }
         //}
+    }
+
+    public void SetMove(AttackType type)      
+    {
+        if(type == AttackType.Normal)
+        {
+            //Check this Character's attack from db
+            //effectPower = attackPower from db
+        }
+        else if (type == AttackType.Defend)
+        {
+            //Check this Character's defend move from db
+            //effectPower = defendPower from db
+
+        }
+        else if (type == AttackType.Special)
+        {
+            //Check this Character's special move from db
+            //effectPower = speicalPower from db
+        }
+        else if (type == AttackType.Ultra)
+        {
+            //Check this Character's ultra move from db
+            //effectPower = ultraPower from db
+            //Do the waiting effect somehow
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
