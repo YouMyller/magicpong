@@ -10,12 +10,16 @@ public class Attack : MonoBehaviour
     Vector2 rotationY;       
 
     float speed = 1;
+    float changedRot;
+
+    bool colliding;
 
     // Start is called before the first frame update
     void Start()
     {
         dir = Direction.Left;
         rotationY = Vector2.one.normalized;
+        changedRot = 90;
     }
 
     // Update is called once per frame
@@ -26,46 +30,77 @@ public class Attack : MonoBehaviour
         if(dir == Direction.Left)
         {
             transform.Translate((Vector2.right / 10) * speed);
+            transform.rotation = Quaternion.Euler(transform.rotation.x, changedRot, transform.rotation.z);
         }
         else
         {
             transform.Translate((Vector2.left / 10) * speed);
+            transform.rotation = Quaternion.Euler(transform.rotation.x, changedRot, transform.rotation.z);
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        float changedRot;
-
-        if (collision.gameObject.tag == "Player")
+        if (colliding == false)
         {
-            //Change direction & rotation when hit by player
-
-            if (dir == Direction.Left)
+            if (collision.gameObject.tag == "Player")
             {
-                dir = Direction.Right;
+                colliding = true;
+
+                if (dir == Direction.Left)
+                {
+                    dir = Direction.Right;
+                }
+                else
+                {
+                    dir = Direction.Left;
+                }
+
+                speed *= 1.2f;
+
+                changedRot = Random.Range(0, 90);
+                transform.Rotate(transform.rotation.x, changedRot, transform.rotation.z, Space.Self);
+
             }
-            else
+
+            if (collision.gameObject.tag == "Wall1")
             {
-                dir = Direction.Left;
+                colliding = true;
+
+                if (dir == Direction.Left)
+                {
+                    changedRot = Random.Range(100, 135);
+                }
+                else
+                {
+                    changedRot = Random.Range(0, 45);
+                }
+
+                transform.Rotate(transform.rotation.x, changedRot, transform.rotation.z, Space.Self);
             }
+            else if (collision.gameObject.tag == "Wall2")
+            {
+                colliding = true;
 
-            changedRot = Random.Range(0, 90);
+                if (dir == Direction.Left)
+                {
+                    changedRot = Random.Range(0, 45);
+                }
+                else
+                {
+                    changedRot = Random.Range(100, 135);
+                }
 
-            transform.Rotate(transform.rotation.x, changedRot, transform.rotation.z, Space.Self);
+                transform.Rotate(transform.rotation.x, changedRot, transform.rotation.z, Space.Self);
+            }
         }
+    }
 
-        if (collision.gameObject.tag == "Wall1")
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Wall1" || collision.gameObject.tag == "Wall2")
         {
-            changedRot = rotationY.y - 90;      //THESE ARE BROKEN AS HELL & NOT READY OR FUNCTIONAL AT ALL; I REPEAT, AT ALL
-
-            transform.Rotate(transform.rotation.x, changedRot, transform.rotation.z, Space.Self);
-        }
-        else if(collision.gameObject.tag == "Wall2")
-        {
-            changedRot = rotationY.y + 180;     //THESE ARE BROKEN AS HELL & NOT READY OR FUNCTIONAL AT ALL; I REPEAT, AT ALL
-
-            transform.Rotate(transform.rotation.x, changedRot, transform.rotation.z, Space.Self);
+            colliding = false;
         }
     }
 
@@ -73,7 +108,7 @@ public class Attack : MonoBehaviour
     {
         if(other.gameObject.tag == "Goal")
         {
-            print("Kakka");
+            //print("Kakka");
         }
         //When enter goal, gooooaaaallll!!!
         //Hurt the hurt character & stuffs
