@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum AttackType { Normal, Defend, Special, Ultra }
+public enum AttackType { Normal, Heal, Special }
 
 public class TurnUI : MonoBehaviour
 {
@@ -15,43 +15,34 @@ public class TurnUI : MonoBehaviour
     [HideInInspector]
     public bool playerReady;
 
+    GameObject ui;
+
     // Start is called before the first frame update
     void Start()
     {
         tm = FindObjectOfType<TurnManager>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
     public void NormalAttack()
     {
         attack = AttackType.Normal;
-
-        tm.CommunicateAttack(this, attack);
     }
 
-    public void Defend()
+    public void Heal()
     {
-        attack = AttackType.Defend;
-
-        tm.CommunicateAttack(this, attack);
+        attack = AttackType.Heal;
     }
 
     public void SpecialAttack()
     {
         attack = AttackType.Special;
-
-        tm.CommunicateAttack(this, attack);
     }
 
-    public void UltraAttack()
+    void InformManager()
     {
-        attack = AttackType.Ultra;
-
         tm.CommunicateAttack(this, attack);
+
+        playerReady = true;
+        ui.SetActive(false);
     }
 }

@@ -28,15 +28,4 @@ public class GameManager : MonoBehaviour
         Instantiate(character2, chara2Pos, chara2Rot);
 
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void StartCombat()
-    {
-
-    }
 }

@@ -35,15 +35,11 @@ public class TurnManager : MonoBehaviour
     {
         if(playerOneTurn.playerReady == true && playerTwoTurn.playerReady == true)
         {
-            //Activate battle!
-
             //Start networking thingsies
 
             charaOne.enabled = true;
             charaTwo.enabled = true;
             atk.enabled = true;
-
-
         }
     }
 
@@ -57,5 +53,15 @@ public class TurnManager : MonoBehaviour
         {
             charaTwo.SetMove(attack);
         }
+    }
+
+    public void NextTurn()
+    {
+        playerOneTurn.playerReady = false;
+        playerTwoTurn.playerReady = false;
+
+        charaOne.enabled = false;
+        charaTwo.enabled = false;
+        atk.enabled = false;
     }
 }
