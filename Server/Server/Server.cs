@@ -15,7 +15,7 @@ namespace Server
         {
             EventBasedNetListener listener = new EventBasedNetListener();
             NetManager server = new NetManager(listener);
-            server.Start(9050 /* port */);
+            server.Start(2310 /* port */);
 
             listener.ConnectionRequestEvent += request =>
             {
