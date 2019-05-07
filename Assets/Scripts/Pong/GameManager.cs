@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public GameObject attack;
+    public GameObject atk;
 
     public GameObject character1;
     public GameObject character2;
@@ -22,21 +22,10 @@ public class GameManager : MonoBehaviour
     {
         chara1Rot = character1.transform.rotation;
         chara2Rot = character2.transform.rotation;
-        attackRot = attack.transform.rotation;
+        attackRot = atk.transform.rotation;
 
         Instantiate(character1, chara1Pos, chara1Rot);
         Instantiate(character2, chara2Pos, chara2Rot);
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    void StartCombat()
-    {
 
     }
 }
