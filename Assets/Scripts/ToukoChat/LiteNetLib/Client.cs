@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 using LiteNetLib;
 using LiteNetLib.Utils;
 
@@ -12,15 +13,19 @@ public class Client : MonoBehaviour
     private EventBasedNetListener listener;
     private NetDataWriter writer;
 
+    private InputField text;
+    private string ipAddress;
+
     // Start is called before the first frame update
     void Start()
     {
+        text = GameObject.Find("InputFieldIP").GetComponent<InputField>();
+        text.text = NetUtils.GetLocalIp(LocalAddrType.IPv4);
+        //ipAddress = NetUtils.GetLocalIp(LocalAddrType.IPv4);
+
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
         writer = new NetDataWriter();
-
-        client.Start();
-        client.Connect("127.0.0.1" /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
 
         /*
         while (!Console.KeyAvailable)
@@ -29,7 +34,12 @@ public class Client : MonoBehaviour
             Thread.Sleep(15);
         }
         */
-        
+    }
+
+    public void ConnectToServer()
+    {
+        client.Start();
+        client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
     }
 
     // Update is called once per frame
