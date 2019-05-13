@@ -11,22 +11,30 @@ public class Client : MonoBehaviour
 {
     private NetManager client;
     private EventBasedNetListener listener;
-    private NetDataWriter writer;
+
+    private Button sendButton;
 
     private InputField text;
-    private string ipAddress;
+    private InputField message;
+    private string messageText;
+
+    NetPeer peer;
 
     // Start is called before the first frame update
     void Start()
     {
+        //sendButton = GameObject.Find("SendMessage").GetComponent<Button>();
+        message = GameObject.Find("MessageField").GetComponent<InputField>();
+        
         text = GameObject.Find("InputFieldIP").GetComponent<InputField>();
         text.text = NetUtils.GetLocalIp(LocalAddrType.IPv4);
         //ipAddress = NetUtils.GetLocalIp(LocalAddrType.IPv4);
 
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
-        writer = new NetDataWriter();
 
+
+        
         /*
         while (!Console.KeyAvailable)
         {
@@ -36,33 +44,54 @@ public class Client : MonoBehaviour
         */
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+        client.PollEvents();
+
+        peer = client.FirstPeer;
+
+        listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
+        {
+            string ploo = dataReader.GetString();
+
+            ChatInput(ploo);
+            
+            //Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
+            dataReader.Recycle();
+        };
+    }
+
     public void ConnectToServer()
     {
         client.Start();
         client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Sets most recent message text into chat input
+    /// </summary>
+    /// <param name="kakka"></param>
+    private void ChatInput(string kakka)
     {
-        client.PollEvents();
-        var peer = client.FirstPeer;
+        Text text = GameObject.Find("ChatFieldText").GetComponent<Text>();
 
-        listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
-        {
-            string ploo = dataReader.GetString();
-            Debug.Log(ploo);
+        text.text = kakka;
+    }
 
-            //Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
-            dataReader.Recycle();
-        };
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            writer.Put("Hello server");
-            peer.Send(writer, DeliveryMethod.ReliableOrdered);
-            //client.Stop();
-        }
+    /// <summary>
+    /// Sends message to server
+    /// </summary>
+    public void SendMessage()
+    {
+        var writer = new NetDataWriter();
+        messageText = message.text;
+        Debug.Log(messageText);
+        writer.Put(messageText);
+        Debug.Log(writer);
+        Debug.Log(peer);
+        peer.Send(writer, DeliveryMethod.ReliableOrdered);
+        writer.Reset();
     }
 
     private void OnDestroy()

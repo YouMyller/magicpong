@@ -15,6 +15,7 @@ namespace Server
         {
             EventBasedNetListener listener = new EventBasedNetListener();
             NetManager server = new NetManager(listener);
+
             server.Start(2310 /* port */);
 
             listener.ConnectionRequestEvent += request =>
@@ -28,9 +29,9 @@ namespace Server
             listener.PeerConnectedEvent += peer =>
             {
                 Console.WriteLine("We got connection: {0}", peer.EndPoint); // Show peer ip
-                NetDataWriter writer = new NetDataWriter();                 // Create writer class
-                writer.Put("Hello client!");                                // Put some string
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);             // Send with reliability
+                            
+                //writer.Put("Hello client!");                                // Put some string
+                //peer.Send(writer, DeliveryMethod.ReliableOrdered);             // Send with reliability
             };
 
             listener.PeerConnectedEvent -= peer =>
@@ -42,6 +43,10 @@ namespace Server
             {
                 string ploo = dataReader.GetString();
                 Console.WriteLine("We got your message: " + ploo + " from peer: " + fromPeer.Id);
+
+                NetDataWriter writer = new NetDataWriter();  // Create writer class
+                writer.Put(ploo);
+                server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
 
                 //Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
                 dataReader.Recycle();
