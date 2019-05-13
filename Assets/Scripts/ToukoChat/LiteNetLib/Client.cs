@@ -4,15 +4,16 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using LiteNetLib;
 using LiteNetLib.Utils;
 
 public class Client : MonoBehaviour
 {
+    private Canvas canvas;
+    private GameObject eventSystem;
     private NetManager client;
     private EventBasedNetListener listener;
-
-    private Button sendButton;
 
     private InputField text;
     private InputField message;
@@ -20,12 +21,20 @@ public class Client : MonoBehaviour
 
     NetPeer peer;
 
+    private void Awake()
+    {
+        canvas = FindObjectOfType<Canvas>();
+        eventSystem = GameObject.Find("EventSystem");
+        DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(canvas);
+        DontDestroyOnLoad(eventSystem);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        //sendButton = GameObject.Find("SendMessage").GetComponent<Button>();
         message = GameObject.Find("MessageField").GetComponent<InputField>();
-        
+
         text = GameObject.Find("InputFieldIP").GetComponent<InputField>();
         text.text = NetUtils.GetLocalIp(LocalAddrType.IPv4);
         //ipAddress = NetUtils.GetLocalIp(LocalAddrType.IPv4);
@@ -33,8 +42,6 @@ public class Client : MonoBehaviour
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
 
-
-        
         /*
         while (!Console.KeyAvailable)
         {
@@ -48,7 +55,7 @@ public class Client : MonoBehaviour
     void Update()
     {
         client.PollEvents();
-
+        
         peer = client.FirstPeer;
 
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
@@ -56,7 +63,6 @@ public class Client : MonoBehaviour
             string ploo = dataReader.GetString();
 
             ChatInput(ploo);
-            
             //Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
             dataReader.Recycle();
         };
@@ -64,6 +70,8 @@ public class Client : MonoBehaviour
 
     public void ConnectToServer()
     {
+
+
         client.Start();
         client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
     }
@@ -92,6 +100,11 @@ public class Client : MonoBehaviour
         Debug.Log(peer);
         peer.Send(writer, DeliveryMethod.ReliableOrdered);
         writer.Reset();
+    }
+
+    public void StartNewGame()
+    {
+        SceneManager.LoadScene(1);
     }
 
     private void OnDestroy()
