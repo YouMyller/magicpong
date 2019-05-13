@@ -38,7 +38,16 @@ namespace Server
                 Console.WriteLine("We lost connection.");
             };
 
-            
+            listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
+            {
+                string ploo = dataReader.GetString();
+                Console.WriteLine("We got your message: " + ploo + " from peer: " + fromPeer.Id);
+
+                //Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
+                dataReader.Recycle();
+            };
+
+
             while (!Console.KeyAvailable)
             {
                 server.PollEvents();
