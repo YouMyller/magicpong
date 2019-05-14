@@ -79,12 +79,8 @@ public class Client : MonoBehaviour
 
     public void ConnectToServer()
     {
-
-
         client.Start();
-        client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
-
-        
+        client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);      
     }
 
     /// <summary>

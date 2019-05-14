@@ -4,28 +4,31 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    private Client client;
     public GameObject atk;
 
-    public GameObject character1;
-    public GameObject character2;
+    public GameObject player;
+    //public GameObject player2;
+
+    private Vector3 spawnPoint;
 
     Vector3 attackStartPos;
     Quaternion attackRot;
-
-    Vector3 chara1Pos;
+    
     Quaternion chara1Rot;
-    Vector3 chara2Pos;
     Quaternion chara2Rot;
 
+    int id;
     // Start is called before the first frame update
     void Start()
     {
-        chara1Rot = character1.transform.rotation;
-        chara2Rot = character2.transform.rotation;
-        attackRot = atk.transform.rotation;
+        client = GameObject.FindGameObjectWithTag("Client").GetComponent<Client>();
 
-        Instantiate(character1, chara1Pos, chara1Rot);
-        Instantiate(character2, chara2Pos, chara2Rot);
+        Instantiate(player, spawnPoint, Quaternion.identity);
 
+        if (client.id == 1)
+        {
+            Instantiate(player, spawnPoint + new Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z + 50), chara1Rot);
+        }
     }
 }
