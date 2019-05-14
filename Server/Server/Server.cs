@@ -28,10 +28,13 @@ namespace Server
 
             listener.PeerConnectedEvent += peer =>
             {
-                Console.WriteLine("We got connection: {0}", peer.EndPoint); // Show peer ip
-                            
-                //writer.Put("Hello client!");                                // Put some string
-                //peer.Send(writer, DeliveryMethod.ReliableOrdered);             // Send with reliability
+                Console.WriteLine("We got connection: {0}", peer.EndPoint);     // Show peer ip
+
+                NetDataWriter writer = new NetDataWriter();                     // Create writer class            
+                writer.Put(peer.Id.ToString());
+                Console.WriteLine(peer.Id);
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);              // Put some string
+                //peer.Send(writer, DeliveryMethod.ReliableOrdered);            // Send with reliability
             };
 
             listener.PeerConnectedEvent -= peer =>

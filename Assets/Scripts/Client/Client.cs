@@ -10,19 +10,22 @@ using LiteNetLib.Utils;
 
 public class Client : MonoBehaviour
 {
-    private Canvas canvas;
-    private GameObject eventSystem;
     private NetManager client;
     private EventBasedNetListener listener;
+    private NetPeer peer;
+    public Player player;
+
+    private GameObject eventSystem;
+    private Canvas canvas; 
 
     private InputField text;
     private InputField message;
     private string messageText;
 
-    NetPeer peer;
+    public int id;
 
     private void Awake()
-    {
+    {   
         canvas = FindObjectOfType<Canvas>();
         eventSystem = GameObject.Find("EventSystem");
         DontDestroyOnLoad(this.gameObject);
@@ -37,33 +40,39 @@ public class Client : MonoBehaviour
 
         text = GameObject.Find("InputFieldIP").GetComponent<InputField>();
         text.text = NetUtils.GetLocalIp(LocalAddrType.IPv4);
-        //ipAddress = NetUtils.GetLocalIp(LocalAddrType.IPv4);
 
         listener = new EventBasedNetListener();
         client = new NetManager(listener);
-
-        /*
-        while (!Console.KeyAvailable)
-        {
-            client.PollEvents();
-            Thread.Sleep(15);
-        }
-        */
     }
 
     // Update is called once per frame
     void Update()
     {
         client.PollEvents();
-        
+        //Thread.Sleep(15);
+
         peer = client.FirstPeer;
 
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
         {
-            string ploo = dataReader.GetString();
-
-            ChatInput(ploo);
-            //Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
+            string tempInput = dataReader.GetString();     
+            
+            if (tempInput == "0" || tempInput == "1")
+            {
+                id = int.Parse(tempInput);
+                Debug.Log(id);
+            }
+            if (tempInput != "MOVEMENT: 0" || tempInput != "MOVEMENT: 1")
+            {
+                float tempPlayerInput = dataReader.GetFloat();
+            }
+            /*
+            if (tempInput == "CHAT")
+            {
+                ChatInput(tempInput);
+            }
+            */
+            
             dataReader.Recycle();
         };
     }
@@ -94,10 +103,7 @@ public class Client : MonoBehaviour
     {
         var writer = new NetDataWriter();
         messageText = message.text;
-        Debug.Log(messageText);
         writer.Put(messageText);
-        Debug.Log(writer);
-        Debug.Log(peer);
         peer.Send(writer, DeliveryMethod.ReliableOrdered);
         writer.Reset();
     }

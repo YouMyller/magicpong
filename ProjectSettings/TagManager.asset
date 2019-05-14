@@ -8,6 +8,7 @@ TagManager:
   - Goal
   - Wall1
   - Wall2
+  - Client
   layers:
   - Default
   - TransparentFX
