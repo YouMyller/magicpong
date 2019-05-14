@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public GameObject atk;
 
     public GameObject player;
-    //public GameObject player2;
+    public GameObject player2;
 
     private Vector3 spawnPoint;
 
@@ -23,12 +23,13 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         client = GameObject.FindGameObjectWithTag("Client").GetComponent<Client>();
-
-        Instantiate(player, spawnPoint, Quaternion.identity);
-
-        if (client.id == 1)
+        if (client.id == 0)
         {
-            Instantiate(player, spawnPoint + new Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z + 50), chara1Rot);
+            Instantiate(player, spawnPoint, Quaternion.identity);
+        }
+        else if (client.id == 1)
+        {
+            Instantiate(player2, spawnPoint + new Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z + 50), chara1Rot);
         }
     }
 }
