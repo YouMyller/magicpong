@@ -13,7 +13,7 @@ public class Client : MonoBehaviour
     private NetManager client;
     private EventBasedNetListener listener;
     private NetPeer peer;
-    public Player player;
+    public PlayerClient player;
 
     private GameObject eventSystem;
     private Canvas canvas; 

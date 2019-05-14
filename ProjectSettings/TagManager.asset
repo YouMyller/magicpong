@@ -9,6 +9,8 @@ TagManager:
   - Wall1
   - Wall2
   - Client
+  - SpawnPoint1
+  - SpawnPoint2
   layers:
   - Default
   - TransparentFX
