@@ -5,12 +5,11 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     private Client client;
-    public GameObject atk;
 
     public GameObject player;
     public GameObject player2;
 
-    private Vector3 spawnPoint;
+    //private Vector3 spawnPoint;
 
     Vector3 attackStartPos;
     Quaternion attackRot;
@@ -19,10 +18,22 @@ public class GameManager : MonoBehaviour
     Quaternion chara2Rot;
 
     int id;
+
+    private void Awake()
+    {
+        //DontDestroyOnLoad(this.gameObject);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         client = GameObject.FindGameObjectWithTag("Client").GetComponent<Client>();
+    }
+
+    public void SpawnPlayers(Vector3 spawnPoint)
+    {
+        print("Spanw players");
+
         if (client.id == 0)
         {
             Instantiate(player, spawnPoint, Quaternion.identity);

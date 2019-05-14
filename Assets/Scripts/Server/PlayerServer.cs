@@ -6,15 +6,20 @@ using LiteNetLib.Utils;
 
 public class PlayerServer : MonoBehaviour
 {
-    //private Server 
+    private Client client;
+
     private Transform spawnPoint1;
     private Transform spawnPoint2;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        spawnPoint1 = GameObject.FindGameObjectWithTag("spawnPoint1").transform;
-        spawnPoint2 = GameObject.FindGameObjectWithTag("spawnPoint2").transform;
+        client = GameObject.FindGameObjectWithTag("Client").GetComponent<Client>();
+
+        spawnPoint1 = GameObject.FindGameObjectWithTag("SpawnPoint1").transform;
+        spawnPoint2 = GameObject.FindGameObjectWithTag("SpawnPoint2").transform;
+
+        client.SendStartCoordinates(spawnPoint1.position);
     }
 
     // Update is called once per frame

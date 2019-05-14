@@ -34,6 +34,7 @@ namespace Server
                 writer.Put(peer.Id.ToString());                                 // Put some string
                 Console.WriteLine(peer.Id);
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);              // Send with reliability
+                writer.Reset();
             };
 
             listener.PeerConnectedEvent -= peer =>
@@ -43,17 +44,42 @@ namespace Server
 
             listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
             {
-                string ploo = dataReader.GetString();
-                Console.WriteLine("We got your message: " + ploo + " from peer: " + fromPeer.Id);
+                if (fromPeer.Id == 0)
+                {
+                    float[] temp = dataReader.GetFloatArray();
+                    Console.WriteLine("We got your spawn position: " + temp[0] + " from peer: " + fromPeer.Id);
 
-                NetDataWriter writer = new NetDataWriter();
-                writer.Put(ploo);
-                server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+                    NetDataWriter writer = new NetDataWriter();
+                    //writer.PutArray(temp);
 
-                //Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
-                dataReader.Recycle();
+                    float pos = temp[0];
+                    writer.Put(pos);
+                    server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+                    writer.Reset();
+
+                    pos = temp[1];
+                    writer.Put(pos);
+                    server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+                    writer.Reset();
+
+                    pos = temp[2];
+                    writer.Put(pos);
+                    server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+                    writer.Reset();
+                }
+                else
+                {
+                    string ploo = dataReader.GetString();
+                    Console.WriteLine("We got your message: " + ploo + " from peer: " + fromPeer.Id);
+
+                    NetDataWriter writer = new NetDataWriter();
+                    writer.Put(ploo);
+                    server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+
+                    //Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
+                    dataReader.Recycle();
+                }
             };
-
 
             while (!Console.KeyAvailable)
             {

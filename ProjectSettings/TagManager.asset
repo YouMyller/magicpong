@@ -11,6 +11,7 @@ TagManager:
   - Client
   - SpawnPoint1
   - SpawnPoint2
+  - GameManager
   layers:
   - Default
   - TransparentFX

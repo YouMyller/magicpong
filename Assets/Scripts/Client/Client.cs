@@ -10,22 +10,25 @@ using LiteNetLib.Utils;
 
 public class Client : MonoBehaviour
 {
+    private GameManager gameManager;
     private NetManager client;
     private EventBasedNetListener listener;
     private NetPeer peer;
     public PlayerClient player;
 
     private GameObject eventSystem;
-    private Canvas canvas; 
+    private Canvas canvas;
 
     private InputField text;
     private InputField message;
     private string messageText;
 
+    public Vector3 spawnPoint;
+
     public int id;
 
     private void Awake()
-    {   
+    {
         canvas = FindObjectOfType<Canvas>();
         eventSystem = GameObject.Find("EventSystem");
         DontDestroyOnLoad(this.gameObject);
@@ -55,8 +58,32 @@ public class Client : MonoBehaviour
 
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
         {
-            string tempInput = dataReader.GetString();     
-            
+            string tempInput = "";
+
+            //if(dataReader.GetFloatArray() != null)
+            //{
+                float posOne = dataReader.GetFloat();           //This worked
+                float posTwo = dataReader.GetFloat();
+                float posThree = dataReader.GetFloat();
+
+                spawnPoint = new Vector3(posOne, posTwo, posThree);
+            print(spawnPoint);
+                gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+                gameManager.SpawnPlayers(spawnPoint);
+
+            /*print("mnöh");
+                float[] positions = dataReader.GetFloatArray();
+                spawnPoint = new Vector3(positions[0], positions[1], positions[2]);
+                gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+                gameManager.SpawnPlayers(spawnPoint);*/
+            //}
+
+            if (dataReader.GetString() != null)
+            {
+                print("jhagj");
+                tempInput = dataReader.GetString();
+            }
+
             if (tempInput == "0" || tempInput == "1")
             {
                 id = int.Parse(tempInput);
@@ -72,15 +99,23 @@ public class Client : MonoBehaviour
                 ChatInput(tempInput);
             }
             */
-            
+
             dataReader.Recycle();
         };
     }
 
-    public void ConnectToServer()
+    public void ConnectToServer(bool server)
     {
-        client.Start();
-        client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);      
+        if (server)
+        {
+            client.Start();
+            client.Connect("localhost" /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
+        }
+        else
+        {
+            client.Start();
+            client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
+        }
     }
 
     /// <summary>
@@ -109,6 +144,25 @@ public class Client : MonoBehaviour
     public void StartNewGame()
     {
         SceneManager.LoadScene(1);
+    }
+
+    public void SendStartCoordinates(Vector3 pos)
+    {
+        var writer = new NetDataWriter();
+        float[] positions = new float[3];
+
+        positions[0] = pos.x;
+        positions[1] = pos.y;
+        positions[2] = pos.z;
+
+        writer.PutArray(positions);
+        peer.Send(writer, DeliveryMethod.ReliableOrdered);
+        writer.Reset();
+    }
+
+    public void SendInput()
+    {
+
     }
 
     private void OnDestroy()
