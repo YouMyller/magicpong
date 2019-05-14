@@ -31,10 +31,9 @@ namespace Server
                 Console.WriteLine("We got connection: {0}", peer.EndPoint);     // Show peer ip
 
                 NetDataWriter writer = new NetDataWriter();                     // Create writer class            
-                writer.Put(peer.Id.ToString());
+                writer.Put(peer.Id.ToString());                                 // Put some string
                 Console.WriteLine(peer.Id);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);              // Put some string
-                //peer.Send(writer, DeliveryMethod.ReliableOrdered);            // Send with reliability
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);              // Send with reliability
             };
 
             listener.PeerConnectedEvent -= peer =>
@@ -47,7 +46,7 @@ namespace Server
                 string ploo = dataReader.GetString();
                 Console.WriteLine("We got your message: " + ploo + " from peer: " + fromPeer.Id);
 
-                NetDataWriter writer = new NetDataWriter();  // Create writer class
+                NetDataWriter writer = new NetDataWriter();
                 writer.Put(ploo);
                 server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
 

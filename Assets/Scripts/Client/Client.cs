@@ -83,6 +83,8 @@ public class Client : MonoBehaviour
 
         client.Start();
         client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
+
+        
     }
 
     /// <summary>
@@ -116,6 +118,9 @@ public class Client : MonoBehaviour
     private void OnDestroy()
     {
         if (client != null)
+        {
+            peer.Disconnect();
             client.Stop();
+        }
     }
 }
