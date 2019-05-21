@@ -60,8 +60,8 @@ public class Client : MonoBehaviour
 
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
         {
-            string tempInput = "";
             int i;
+            string tempInput = "";
 
             i = dataReader.GetInt();
             print("Get player id: " + i);
@@ -74,21 +74,32 @@ public class Client : MonoBehaviour
 
             if (player != null)
             {
-                float posX = dataReader.GetFloat();
-                float posY = dataReader.GetFloat();
-                float posZ = dataReader.GetFloat();
-
-                position = new Vector3(posX, posY, posZ);
-                print(position);
                 gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>(); //This should only happen once
+                tempInput = dataReader.GetString();
+                if (i == 0 && tempInput == "MOVE")
+                {
+                    float posX = dataReader.GetFloat();
+                    //float posY = dataReader.GetFloat();
+                    float posZ = dataReader.GetFloat();
+
+                    position = new Vector3(posX, gameManager.playerOne.transform.position.y, gameManager.playerOne.transform.position.z);
+                    position = new Vector3(gameManager.playerOne.transform.position.x, gameManager.playerOne.transform.position.y, posZ);
+                    print(position);
+                    gameManager.playerOne.transform.position = position;
+                }
+                else if (i == 1 && tempInput == "MOVE")
+                {
+                    float posX = dataReader.GetFloat();
+                    //float posY = dataReader.GetFloat();
+                    float posZ = dataReader.GetFloat();
+
+                    position = new Vector3(posX, gameManager.playerTwo.transform.position.y, gameManager.playerTwo.transform.position.z);
+                    position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
+                    print(position);
+                    gameManager.playerTwo.transform.position = position;
+                }
             }
 
-            Debug.Log(tempInput);
-
-            if (tempInput != "MOVEMENT: 0" || tempInput != "MOVEMENT: 1")
-            {
-                float tempPlayerInput = dataReader.GetFloat();
-            }
             /*
             if (tempInput == "CHAT")
             {
@@ -151,7 +162,7 @@ public class Client : MonoBehaviour
 
     public void SendInput()
     {
-        
+
     }
 
     private void OnDestroy()

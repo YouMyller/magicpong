@@ -7,15 +7,14 @@ public class GameManager : MonoBehaviour
     private Client client;
 
     public GameObject player;
-    public GameObject player2;
+    public GameObject playerOne;
+    public GameObject playerTwo;
 
     private Transform spawnPoint1;
     private Transform spawnPoint2;
     
     Quaternion chara1Rot;
     Quaternion chara2Rot;
-
-    int id;
 
     // Start is called before the first frame update
     void Start()
@@ -30,8 +29,8 @@ public class GameManager : MonoBehaviour
         spawnPoint2 = GameObject.FindGameObjectWithTag("SpawnPoint2").transform;
         print("Spawn players");
 
-        GameObject playerOne = Instantiate(player, spawnPoint1.position, Quaternion.identity);
-        GameObject playerTwo = Instantiate(player, spawnPoint2.position, chara1Rot);
+        playerOne = Instantiate(player, spawnPoint1.position, Quaternion.identity);
+        playerTwo = Instantiate(player, spawnPoint2.position, chara1Rot);
 
         if (client.id == 0)
         {
