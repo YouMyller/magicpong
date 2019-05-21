@@ -35,13 +35,18 @@ public class GameManager : MonoBehaviour
         spawnPoint2 = GameObject.FindGameObjectWithTag("SpawnPoint2").transform;
         print("Spawn players");
 
+        GameObject playerOne = Instantiate(player, spawnPoint1.position, Quaternion.identity);
+        GameObject playerTwo = Instantiate(player, spawnPoint2.position, chara1Rot);
+
         if (client.id == 0)
         {
-            Instantiate(player, spawnPoint1.position, Quaternion.identity);
+            playerTwo.transform.Find("MainCamera").gameObject.SetActive(false);
+            playerTwo.GetComponent<PlayerClient>().enabled = false;
         }
         else if (client.id == 1)
         {
-            Instantiate(player2, spawnPoint2.position, chara1Rot);
+            playerOne.transform.Find("MainCamera").gameObject.SetActive(false);
+            playerOne.GetComponent<PlayerClient>().enabled = false;
         }
     }
 }

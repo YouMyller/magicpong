@@ -9,6 +9,6 @@ EditorBuildSettings:
     path: Assets/Scenes/lobby.unity
     guid: 004073b6dc430de49af761bb96e1d9f4
   - enabled: 1
-    path: Assets/Scenes/juusoscene.unity
+    path: Assets/Scenes/pong.unity
     guid: 8449d250390d0dc46965d00edb77cc02
   m_configObjects: {}
