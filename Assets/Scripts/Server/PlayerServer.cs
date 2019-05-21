@@ -20,6 +20,7 @@ public class PlayerServer : MonoBehaviour
         spawnPoint2 = GameObject.FindGameObjectWithTag("SpawnPoint2").transform;
 
         client.SendStartCoordinates(spawnPoint1.position);
+        client.SendStartCoordinates(spawnPoint2.position);
     }
 
     // Update is called once per frame

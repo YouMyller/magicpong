@@ -62,14 +62,14 @@ public class Client : MonoBehaviour
 
             //if(dataReader.GetFloatArray() != null)
             //{
-                float posOne = dataReader.GetFloat();           //This worked
-                float posTwo = dataReader.GetFloat();
-                float posThree = dataReader.GetFloat();
+            float posX = dataReader.GetFloat();           //This worked
+            float posY = dataReader.GetFloat();
+            float posZ = dataReader.GetFloat();
 
-                spawnPoint = new Vector3(posOne, posTwo, posThree);
+            spawnPoint = new Vector3(posX, posY, posZ);
             print(spawnPoint);
-                gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-                gameManager.SpawnPlayers(spawnPoint);
+            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+            gameManager.SpawnPlayers(spawnPoint);
 
             /*print("mnöh");
                 float[] positions = dataReader.GetFloatArray();
@@ -151,11 +151,14 @@ public class Client : MonoBehaviour
         var writer = new NetDataWriter();
         float[] positions = new float[3];
 
-        positions[0] = pos.x;
-        positions[1] = pos.y;
-        positions[2] = pos.z;
+        //positions[0] = pos.x;
+        //positions[1] = pos.y;
+        //positions[2] = pos.z;
 
-        writer.PutArray(positions);
+        writer.Put(pos.x);
+        writer.Put(pos.y);
+        writer.Put(pos.z);
+        //writer.PutArray(positions);
         peer.Send(writer, DeliveryMethod.ReliableOrdered);
         writer.Reset();
     }
