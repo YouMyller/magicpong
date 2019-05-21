@@ -78,25 +78,21 @@ public class Client : MonoBehaviour
                 tempInput = dataReader.GetString();
                 if (i == 0 && tempInput == "MOVE")
                 {
-                    float posX = dataReader.GetFloat();
-                    //float posY = dataReader.GetFloat();
+                    float posX = dataReader.GetFloat();            
+                    gameManager.playerOne.transform.position = new Vector3(posX, gameManager.playerOne.transform.position.y, gameManager.playerOne.transform.position.z);
                     float posZ = dataReader.GetFloat();
-
-                    position = new Vector3(posX, gameManager.playerOne.transform.position.y, gameManager.playerOne.transform.position.z);
-                    position = new Vector3(gameManager.playerOne.transform.position.x, gameManager.playerOne.transform.position.y, posZ);
+                    gameManager.playerOne.transform.position = new Vector3(gameManager.playerOne.transform.position.x, gameManager.playerOne.transform.position.y, posZ);
+                    Debug.Log("Move player one: " + posX + posZ);
                     print(position);
-                    gameManager.playerOne.transform.position = position;
                 }
                 else if (i == 1 && tempInput == "MOVE")
                 {
-                    float posX = dataReader.GetFloat();
-                    //float posY = dataReader.GetFloat();
+                    float posX = dataReader.GetFloat(); 
+                    gameManager.playerTwo.transform.position = new Vector3(posX, gameManager.playerTwo.transform.position.y, gameManager.playerTwo.transform.position.z);
                     float posZ = dataReader.GetFloat();
-
-                    position = new Vector3(posX, gameManager.playerTwo.transform.position.y, gameManager.playerTwo.transform.position.z);
-                    position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
+                    gameManager.playerTwo.transform.position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
+                    Debug.Log("Move player two: " + posX + posZ);
                     print(position);
-                    gameManager.playerTwo.transform.position = position;
                 }
             }
 
@@ -160,9 +156,13 @@ public class Client : MonoBehaviour
         writer.Reset();
     }
 
-    public void SendInput()
+    public void SendInput(string input)
     {
+        var writer = new NetDataWriter();
 
+        writer.Put(input);
+        peer.Send(writer, DeliveryMethod.ReliableOrdered);
+        writer.Reset();
     }
 
     private void OnDestroy()

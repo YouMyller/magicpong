@@ -26,17 +26,11 @@ public class PlayerClient : MonoBehaviour
         //Move left/right
         if (Input.GetKey(KeyCode.D))
         {
-            client.SendInput();
+            client.SendInput("D");
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            client.SendInput();
+            client.SendInput("A");
         }
-    }
-
-    //This happens in Client - move it there
-    public void SendInput()
-    {
-        
     }
 }

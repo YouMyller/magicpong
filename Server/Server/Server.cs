@@ -81,27 +81,31 @@ namespace Server
                     {                        
                         //Calculate new position:
                         if (input == "A")
-                            pOnePosX += .2f;
-                        else if (input == "D")
                             pOnePosX -= .2f;
+                        else if (input == "D")
+                            pOnePosX += .2f;
 
                         writer.Put(fromPeer.Id);       
                         writer.Put("MOVE");
                         writer.Put(pOnePosX);
                         writer.Put(pOnePosZ);
+
+                        Console.WriteLine("Player 1 brand new pos: " + pOnePosX + " " + pOnePosY + " " + pOnePosZ + " from peer: " + fromPeer.Id);
                     }
                     else
                     {
                         //Calculate new position:
                         if (input == "A")
-                            pTwoPosX += .2f;
-                        else if (input == "D")
                             pTwoPosX -= .2f;
+                        else if (input == "D")
+                            pTwoPosX += .2f;
 
                         writer.Put(fromPeer.Id);        
                         writer.Put("MOVE");
                         writer.Put(pTwoPosX);
                         writer.Put(pTwoPosZ);
+
+                        Console.WriteLine("Player 2 brand new pos: " + pTwoPosX + " " + pTwoPosY + " " + pTwoPosZ + " from peer: " + fromPeer.Id);
                     }
 
                     server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
