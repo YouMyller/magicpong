@@ -16,9 +16,6 @@ public class Client : MonoBehaviour
     private NetPeer peer;
     public PlayerClient player;
 
-    private GameObject eventSystem;
-    private Canvas canvas;
-
     private InputField text;
     private InputField message;
     private string messageText;
@@ -31,11 +28,7 @@ public class Client : MonoBehaviour
 
     private void Awake()
     {
-        canvas = FindObjectOfType<Canvas>();
-        eventSystem = GameObject.Find("EventSystem");
         DontDestroyOnLoad(this.gameObject);
-        DontDestroyOnLoad(canvas);
-        DontDestroyOnLoad(eventSystem);
     }
 
     // Start is called before the first frame update

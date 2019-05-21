@@ -30,7 +30,8 @@ public class GameManager : MonoBehaviour
         print("Spawn players");
 
         playerOne = Instantiate(player, spawnPoint1.position, Quaternion.identity);
-        playerTwo = Instantiate(player, spawnPoint2.position, chara1Rot);
+        playerTwo = Instantiate(player, spawnPoint2.position, Quaternion.Euler
+            (new Vector3(transform.rotation.x, transform.rotation.y -180, transform.rotation.z)));
 
         if (client.id == 0)
         {
