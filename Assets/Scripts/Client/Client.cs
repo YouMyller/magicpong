@@ -61,38 +61,30 @@ public class Client : MonoBehaviour
         listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
         {
             string tempInput = "";
+            int i;
 
-            if (dataReader.GetString() != null)
+            i = dataReader.GetInt();
+            print("Get player id: " + i);
+
+            if (i == 0 || i == 1)
             {
-                //print("jhagj");
-                tempInput = dataReader.GetString();
+                id = i;
+                Debug.Log("Player id: " + id);
             }
 
-            if (tempInput == "0" || tempInput == "1")
+            if (player != null)
             {
-                id = int.Parse(tempInput);
-                Debug.Log(id);
+                float posX = dataReader.GetFloat();
+                float posY = dataReader.GetFloat();
+                float posZ = dataReader.GetFloat();
+
+                spawnPoint = new Vector3(posX, posY, posZ);
+                print(spawnPoint);
+                gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>(); //This should only happen once
+                //gameManager.SpawnPlayers();
             }
 
-            float posX = dataReader.GetFloat();           
-            float posY = dataReader.GetFloat();
-            float posZ = dataReader.GetFloat();
             Debug.Log(tempInput);
-
-            spawnPoint = new Vector3(posX, posY, posZ);
-            print(spawnPoint);
-            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-            gameManager.SpawnPlayers(spawnPoint);
-
-
-
-            /*print("mnöh");
-                float[] positions = dataReader.GetFloatArray();
-                spawnPoint = new Vector3(positions[0], positions[1], positions[2]);
-                gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-                gameManager.SpawnPlayers(spawnPoint);*/
-            //}
-
 
             if (tempInput != "MOVEMENT: 0" || tempInput != "MOVEMENT: 1")
             {
@@ -109,19 +101,13 @@ public class Client : MonoBehaviour
         };
     }
 
-    public void ConnectToServer(bool s)
+    /// <summary>
+    /// Connects to server
+    /// </summary>
+    public void ConnectToServer()
     {
-        if (s)
-        {
-            client.Start();
-            client.Connect("localhost" /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
-        }
-        else
-        {
-            client.Start();
-            client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
-        }
-        server = s;
+        client.Start();
+        client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
     }
 
     /// <summary>
@@ -152,19 +138,14 @@ public class Client : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void SendStartCoordinates(Vector3 pos, string id)
+    public void SendStartCoordinates(Vector3 pos)
     {
         var writer = new NetDataWriter();
-        //float[] positions = new float[3];
 
-        //positions[0] = pos.x;
-        //positions[1] = pos.y;
-        //positions[2] = pos.z;
-        writer.Put(id);
+        writer.Put(id.ToString());
         writer.Put(pos.x);
         writer.Put(pos.y);
         writer.Put(pos.z);
-        //writer.PutArray(positions);
         peer.Send(writer, DeliveryMethod.ReliableOrdered);
         writer.Reset();
     }

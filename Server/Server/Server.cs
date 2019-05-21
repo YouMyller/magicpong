@@ -31,8 +31,8 @@ namespace Server
                 Console.WriteLine("We got connection: {0}", peer.EndPoint);     // Show peer ip
 
                 NetDataWriter writer = new NetDataWriter();                     // Create writer class            
-                writer.Put(peer.Id.ToString());                                 // Put some string
-                Console.WriteLine(peer.Id);
+                writer.Put(peer.Id);                                 // Put some string
+                Console.WriteLine("Peers id: " + peer.Id);
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);              // Send with reliability
                 writer.Reset();
             };
@@ -46,7 +46,7 @@ namespace Server
             {
                 if (fromPeer.Id == 0)
                 {
-                    string tempS = dataReader.GetString();
+                    //string tempS = dataReader.GetString();
                     float tempX = dataReader.GetFloat();
                     float tempY = dataReader.GetFloat();
                     float tempZ = dataReader.GetFloat();
@@ -54,7 +54,7 @@ namespace Server
 
                     NetDataWriter writer = new NetDataWriter();
 
-                    writer.Put(tempS);
+                    //writer.Put(tempS);
                     writer.Put(tempX);
                     writer.Put(tempY);
                     writer.Put(tempZ);

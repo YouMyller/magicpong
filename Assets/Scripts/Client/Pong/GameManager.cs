@@ -9,10 +9,8 @@ public class GameManager : MonoBehaviour
     public GameObject player;
     public GameObject player2;
 
-    //private Vector3 spawnPoint;
-
-    Vector3 attackStartPos;
-    Quaternion attackRot;
+    private Transform spawnPoint1;
+    private Transform spawnPoint2;
     
     Quaternion chara1Rot;
     Quaternion chara2Rot;
@@ -28,19 +26,22 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         client = GameObject.FindGameObjectWithTag("Client").GetComponent<Client>();
+        SpawnPlayers();
     }
 
-    public void SpawnPlayers(Vector3 spawnPoint)
+    public void SpawnPlayers()
     {
-        print("Spanw players");
+        spawnPoint1 = GameObject.FindGameObjectWithTag("SpawnPoint1").transform;
+        spawnPoint2 = GameObject.FindGameObjectWithTag("SpawnPoint2").transform;
+        print("Spawn players");
 
         if (client.id == 0)
         {
-            Instantiate(player, spawnPoint, Quaternion.identity);
+            Instantiate(player, spawnPoint1.position, Quaternion.identity);
         }
         else if (client.id == 1)
         {
-            Instantiate(player2, spawnPoint, chara1Rot);
+            Instantiate(player2, spawnPoint2.position, chara1Rot);
         }
     }
 }
