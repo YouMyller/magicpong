@@ -17,11 +17,6 @@ public class GameManager : MonoBehaviour
 
     int id;
 
-    private void Awake()
-    {
-        //DontDestroyOnLoad(this.gameObject);
-    }
-
     // Start is called before the first frame update
     void Start()
     {
@@ -40,12 +35,12 @@ public class GameManager : MonoBehaviour
 
         if (client.id == 0)
         {
-            playerTwo.transform.Find("MainCamera").gameObject.SetActive(false);
+            playerTwo.transform.Find("Main Camera").gameObject.SetActive(false);
             playerTwo.GetComponent<PlayerClient>().enabled = false;
         }
         else if (client.id == 1)
         {
-            playerOne.transform.Find("MainCamera").gameObject.SetActive(false);
+            playerOne.transform.Find("Main Camera").gameObject.SetActive(false);
             playerOne.GetComponent<PlayerClient>().enabled = false;
         }
     }

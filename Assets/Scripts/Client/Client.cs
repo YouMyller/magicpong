@@ -23,7 +23,7 @@ public class Client : MonoBehaviour
     private InputField message;
     private string messageText;
 
-    public Vector3 spawnPoint;
+    public Vector3 position;
 
     public int id;
 
@@ -78,10 +78,9 @@ public class Client : MonoBehaviour
                 float posY = dataReader.GetFloat();
                 float posZ = dataReader.GetFloat();
 
-                spawnPoint = new Vector3(posX, posY, posZ);
-                print(spawnPoint);
+                position = new Vector3(posX, posY, posZ);
+                print(position);
                 gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>(); //This should only happen once
-                //gameManager.SpawnPlayers();
             }
 
             Debug.Log(tempInput);
@@ -152,7 +151,7 @@ public class Client : MonoBehaviour
 
     public void SendInput()
     {
-
+        
     }
 
     private void OnDestroy()
