@@ -12,6 +12,8 @@ public class GameManager : MonoBehaviour
 
     private Transform spawnPoint1;
     private Transform spawnPoint2;
+
+    public GameObject ball;
     
     Quaternion chara1Rot;
     Quaternion chara2Rot;

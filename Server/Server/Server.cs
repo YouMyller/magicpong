@@ -11,6 +11,10 @@ namespace Server
 {
     class Server
     {
+        enum GameState { Start, Game, Win }
+        GameState state;
+        //If Win, send victory/loss messages
+
         static void Main(string[] args)
         {
             EventBasedNetListener listener = new EventBasedNetListener();
@@ -25,6 +29,11 @@ namespace Server
             float pTwoPosX = 0;
             float pTwoPosY = 0;
             float pTwoPosZ = 0;
+
+            bool pOneColl = false;
+            bool pTwoColl = false;
+            bool ballColl = false;
+
 
             server.Start(2310 /* port */);
 
@@ -55,6 +64,7 @@ namespace Server
             listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
             {
                 string input = dataReader.GetString();
+                bool collision = dataReader.GetBool();
 
                 if (input == "SET POS")
                 {
@@ -78,38 +88,62 @@ namespace Server
                     NetDataWriter writer = new NetDataWriter();
 
                     if (fromPeer.Id == 0)
-                    {                        
-                        //Calculate new position:
-                        if (input == "A")
-                            pOnePosX -= .2f;
-                        else if (input == "D")
-                            pOnePosX += .2f;
+                    {
+                        pOneColl = collision;
 
-                        writer.Put(fromPeer.Id);       
-                        writer.Put("MOVE");
-                        writer.Put(pOnePosX);
-                        writer.Put(pOnePosZ);
+                        if (!pOneColl)
+                        {
+                            //Calculate new position:
+                            if (input == "A")
+                                pOnePosX -= .2f;
+                            else if (input == "D")
+                                pOnePosX += .2f;
 
-                        Console.WriteLine("Player 1 brand new pos: " + pOnePosX + " " + pOnePosY + " " + pOnePosZ + " from peer: " + fromPeer.Id);
+                            writer.Put(fromPeer.Id);
+                            writer.Put("MOVE");
+                            writer.Put(pOnePosX);
+                            writer.Put(pOnePosZ);
+
+                            Console.WriteLine("Player 1 brand new pos: " + pOnePosX + " " + pOnePosY + " " + pOnePosZ + " from peer: " + fromPeer.Id);
+                        }
                     }
                     else
                     {
-                        //Calculate new position:
-                        if (input == "A")
-                            pTwoPosX += .2f;
-                        else if (input == "D")
-                            pTwoPosX -= .2f;
+                        pTwoColl = collision;
 
-                        writer.Put(fromPeer.Id);        
-                        writer.Put("MOVE");
-                        writer.Put(pTwoPosX);
-                        writer.Put(pTwoPosZ);
+                        if (!pTwoColl)
+                        {
+                            //Calculate new position:
+                            if (input == "A")
+                                pTwoPosX += .2f;
+                            else if (input == "D")
+                                pTwoPosX -= .2f;
 
-                        Console.WriteLine("Player 2 brand new pos: " + pTwoPosX + " " + pTwoPosY + " " + pTwoPosZ + " from peer: " + fromPeer.Id);
+                            writer.Put(fromPeer.Id);
+                            writer.Put("MOVE");
+                            writer.Put(pTwoPosX);
+                            writer.Put(pTwoPosZ);
+
+                            Console.WriteLine("Player 2 brand new pos: " + pTwoPosX + " " + pTwoPosY + " " + pTwoPosZ + " from peer: " + fromPeer.Id);
+                        }
                     }
 
                     server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
                     writer.Reset();
+                }
+                else if (input == "BALL MOVE")
+                {
+                    ballColl = collision;
+
+                    if (!ballColl)
+                    {
+                        //Move ball
+                    }
+                    else
+                    {
+                        //Send command to change ball's course
+                        //writer.Put("BALL DIR CHANGE");
+                    }
                 }
             };
 

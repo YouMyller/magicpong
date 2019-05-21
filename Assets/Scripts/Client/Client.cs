@@ -87,6 +87,14 @@ public class Client : MonoBehaviour
                     Debug.Log("Move player two: " + posX + posZ);
                     print(position);
                 }
+
+                if(tempInput == "BALL MOVE")
+                {
+                    float posX = dataReader.GetFloat();
+                    player.ball.transform.position = new Vector3(posX, gameManager.playerTwo.transform.position.y, gameManager.playerTwo.transform.position.z);
+                    float posZ = dataReader.GetFloat();
+                    player.ball.transform.position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
+                }
             }
 
             /*
@@ -137,7 +145,7 @@ public class Client : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void SendStartCoordinates(Vector3 pos)
+    public void SendPlayerStartCoordinates(Vector3 pos)
     {
         var writer = new NetDataWriter();
 
@@ -149,11 +157,24 @@ public class Client : MonoBehaviour
         writer.Reset();
     }
 
-    public void SendInput(string input)
+    public void SendBallStartCoordinates(Vector3 pos)
+    {
+        var writer = new NetDataWriter();
+
+        writer.Put("SET BALL POS");
+        writer.Put(pos.x);
+        writer.Put(pos.y);
+        writer.Put(pos.z);
+        peer.Send(writer, DeliveryMethod.ReliableOrdered);
+        writer.Reset();
+    }
+
+    public void SendInput(string input, bool collision)
     {
         var writer = new NetDataWriter();
 
         writer.Put(input);
+        writer.Put(collision);
         peer.Send(writer, DeliveryMethod.ReliableOrdered);
         writer.Reset();
     }

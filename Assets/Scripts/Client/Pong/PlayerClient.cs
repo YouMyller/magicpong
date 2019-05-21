@@ -6,8 +6,14 @@ public class PlayerClient : MonoBehaviour
 {
     private Client client;
 
+    public Ball ball;
+
     private int speed = 1;
     private int id;
+
+    private bool collision;
+
+    private Transform ballSpawnPoint;
 
     // Start is called before the first frame update
     void Start()
@@ -17,7 +23,10 @@ public class PlayerClient : MonoBehaviour
         id = client.id;
         Debug.Log(id);
 
-        client.SendStartCoordinates(transform.position);
+        client.SendPlayerStartCoordinates(transform.position);
+
+        ballSpawnPoint = GameObject.FindGameObjectWithTag("BallSpawnPoint").transform;      //Doesn't actually exist
+        //Spawn ball
     }
 
     // Update is called once per frame
@@ -26,11 +35,11 @@ public class PlayerClient : MonoBehaviour
         //Move left/right
         if (Input.GetKey(KeyCode.D))
         {
-            client.SendInput("D");
+            client.SendInput("D", collision);
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            client.SendInput("A");
+            client.SendInput("A", collision);
         }
     }
 }
