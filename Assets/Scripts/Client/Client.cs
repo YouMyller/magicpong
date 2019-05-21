@@ -152,7 +152,7 @@ public class Client : MonoBehaviour
     {
         var writer = new NetDataWriter();
 
-        writer.Put(id.ToString());
+        writer.Put("SET POS");
         writer.Put(pos.x);
         writer.Put(pos.y);
         writer.Put(pos.z);

@@ -16,9 +16,12 @@ namespace Server
             EventBasedNetListener listener = new EventBasedNetListener();
             NetManager server = new NetManager(listener);
 
+            //Player one position
             float pOnePosX = 0;
             float pOnePosY = 0;
             float pOnePosZ = 0;
+
+            //Player two position
             float pTwoPosX = 0;
             float pTwoPosY = 0;
             float pTwoPosZ = 0;
@@ -55,15 +58,20 @@ namespace Server
 
                 if (input == "SET POS")
                 {
-                    pOnePosX = dataReader.GetFloat();
-                    pOnePosY = dataReader.GetFloat();
-                    pOnePosZ = dataReader.GetFloat();
-                    Console.WriteLine("We got player 1 start position: " + pOnePosX + " " + pOnePosY + " " + pOnePosZ + " from peer: " + fromPeer.Id);
-
-                    pTwoPosX = dataReader.GetFloat();
-                    pTwoPosY = dataReader.GetFloat();
-                    pTwoPosZ = dataReader.GetFloat();
-                    Console.WriteLine("We got player 2 start position: " + pTwoPosX + " " + pTwoPosY + " " + pTwoPosZ + " from peer: " + fromPeer.Id);
+                    if (fromPeer.Id == 0)
+                    {
+                        pOnePosX = dataReader.GetFloat();
+                        pOnePosY = dataReader.GetFloat();
+                        pOnePosZ = dataReader.GetFloat();
+                        Console.WriteLine("We got player 1 start position: " + pOnePosX + " " + pOnePosY + " " + pOnePosZ + " from peer: " + fromPeer.Id);
+                    }
+                    else if (fromPeer.Id == 1)
+                    {
+                        pTwoPosX = dataReader.GetFloat();
+                        pTwoPosY = dataReader.GetFloat();
+                        pTwoPosZ = dataReader.GetFloat();
+                        Console.WriteLine("We got player 2 start position: " + pTwoPosX + " " + pTwoPosY + " " + pTwoPosZ + " from peer: " + fromPeer.Id);
+                    }
                 }
                 else if (input == "A" || input == "D")
                 {
@@ -80,7 +88,6 @@ namespace Server
                         writer.Put(fromPeer.Id);       
                         writer.Put("MOVE");
                         writer.Put(pOnePosX);
-                        writer.Put(pOnePosY);
                         writer.Put(pOnePosZ);
                     }
                     else
@@ -94,7 +101,6 @@ namespace Server
                         writer.Put(fromPeer.Id);        
                         writer.Put("MOVE");
                         writer.Put(pTwoPosX);
-                        writer.Put(pTwoPosY);
                         writer.Put(pTwoPosZ);
                     }
 
