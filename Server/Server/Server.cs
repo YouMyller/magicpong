@@ -96,9 +96,9 @@ namespace Server
                     {
                         //Calculate new position:
                         if (input == "A")
-                            pTwoPosX -= .2f;
-                        else if (input == "D")
                             pTwoPosX += .2f;
+                        else if (input == "D")
+                            pTwoPosX -= .2f;
 
                         writer.Put(fromPeer.Id);        
                         writer.Put("MOVE");
