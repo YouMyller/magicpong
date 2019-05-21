@@ -27,6 +27,8 @@ public class Client : MonoBehaviour
 
     public int id;
 
+    public bool server;
+
     private void Awake()
     {
         canvas = FindObjectOfType<Canvas>();
@@ -60,27 +62,9 @@ public class Client : MonoBehaviour
         {
             string tempInput = "";
 
-            //if(dataReader.GetFloatArray() != null)
-            //{
-            float posX = dataReader.GetFloat();           //This worked
-            float posY = dataReader.GetFloat();
-            float posZ = dataReader.GetFloat();
-
-            spawnPoint = new Vector3(posX, posY, posZ);
-            print(spawnPoint);
-            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-            gameManager.SpawnPlayers(spawnPoint);
-
-            /*print("mnöh");
-                float[] positions = dataReader.GetFloatArray();
-                spawnPoint = new Vector3(positions[0], positions[1], positions[2]);
-                gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
-                gameManager.SpawnPlayers(spawnPoint);*/
-            //}
-
             if (dataReader.GetString() != null)
             {
-                print("jhagj");
+                //print("jhagj");
                 tempInput = dataReader.GetString();
             }
 
@@ -89,6 +73,27 @@ public class Client : MonoBehaviour
                 id = int.Parse(tempInput);
                 Debug.Log(id);
             }
+
+            float posX = dataReader.GetFloat();           
+            float posY = dataReader.GetFloat();
+            float posZ = dataReader.GetFloat();
+            Debug.Log(tempInput);
+
+            spawnPoint = new Vector3(posX, posY, posZ);
+            print(spawnPoint);
+            gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+            gameManager.SpawnPlayers(spawnPoint);
+
+
+
+            /*print("mnöh");
+                float[] positions = dataReader.GetFloatArray();
+                spawnPoint = new Vector3(positions[0], positions[1], positions[2]);
+                gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>();
+                gameManager.SpawnPlayers(spawnPoint);*/
+            //}
+
+
             if (tempInput != "MOVEMENT: 0" || tempInput != "MOVEMENT: 1")
             {
                 float tempPlayerInput = dataReader.GetFloat();
@@ -104,9 +109,9 @@ public class Client : MonoBehaviour
         };
     }
 
-    public void ConnectToServer(bool server)
+    public void ConnectToServer(bool s)
     {
-        if (server)
+        if (s)
         {
             client.Start();
             client.Connect("localhost" /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
@@ -116,6 +121,7 @@ public class Client : MonoBehaviour
             client.Start();
             client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
         }
+        server = s;
     }
 
     /// <summary>
@@ -146,15 +152,15 @@ public class Client : MonoBehaviour
         SceneManager.LoadScene(1);
     }
 
-    public void SendStartCoordinates(Vector3 pos)
+    public void SendStartCoordinates(Vector3 pos, string id)
     {
         var writer = new NetDataWriter();
-        float[] positions = new float[3];
+        //float[] positions = new float[3];
 
         //positions[0] = pos.x;
         //positions[1] = pos.y;
         //positions[2] = pos.z;
-
+        writer.Put(id);
         writer.Put(pos.x);
         writer.Put(pos.y);
         writer.Put(pos.z);

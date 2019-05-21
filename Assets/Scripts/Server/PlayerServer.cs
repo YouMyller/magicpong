@@ -11,6 +11,8 @@ public class PlayerServer : MonoBehaviour
     private Transform spawnPoint1;
     private Transform spawnPoint2;
 
+    bool server;
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -18,14 +20,22 @@ public class PlayerServer : MonoBehaviour
 
         spawnPoint1 = GameObject.FindGameObjectWithTag("SpawnPoint1").transform;
         spawnPoint2 = GameObject.FindGameObjectWithTag("SpawnPoint2").transform;
-
-        client.SendStartCoordinates(spawnPoint1.position);
-        client.SendStartCoordinates(spawnPoint2.position);
+        server = client.server;
+        SendStartPositions(server);
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void SendStartPositions(bool s)
+    {
+        if (s)
+        {
+            client.SendStartCoordinates(spawnPoint1.position, "0");
+            client.SendStartCoordinates(spawnPoint2.position, "1");
+        }
     }
 }

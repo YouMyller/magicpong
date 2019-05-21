@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
         }
         else if (client.id == 1)
         {
-            Instantiate(player2, spawnPoint + new Vector3(spawnPoint.x, spawnPoint.y, spawnPoint.z + 50), chara1Rot);
+            Instantiate(player2, spawnPoint, chara1Rot);
         }
     }
 }

@@ -46,15 +46,15 @@ namespace Server
             {
                 if (fromPeer.Id == 0)
                 {
-                    //float[] temp = dataReader.GetFloatArray();
+                    string tempS = dataReader.GetString();
                     float tempX = dataReader.GetFloat();
                     float tempY = dataReader.GetFloat();
                     float tempZ = dataReader.GetFloat();
                     Console.WriteLine("We got your spawn position: " + tempX + " " + tempY + " " + tempZ + " from peer: " + fromPeer.Id);
 
                     NetDataWriter writer = new NetDataWriter();
-                    //writer.PutArray(temp);
 
+                    writer.Put(tempS);
                     writer.Put(tempX);
                     writer.Put(tempY);
                     writer.Put(tempZ);
