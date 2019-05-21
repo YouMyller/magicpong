@@ -16,11 +16,8 @@ public class PlayerClient : MonoBehaviour
         client.player = this;
         id = client.id;
         Debug.Log(id);
-    }
 
-    void Update()
-    {
-        
+        client.SendStartCoordinates(transform.position);
     }
 
     // Update is called once per frame
@@ -30,12 +27,16 @@ public class PlayerClient : MonoBehaviour
         if (Input.GetKey(KeyCode.D))
         {
             client.SendInput();
-            transform.Translate((Vector2.right / 10) * speed);
         }
         else if (Input.GetKey(KeyCode.A))
         {
             client.SendInput();
-            transform.Translate((Vector2.left / 10) * speed);
         }
+    }
+
+    //This happens in Client - move it there
+    public void SendInput()
+    {
+        
     }
 }

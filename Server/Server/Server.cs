@@ -16,6 +16,13 @@ namespace Server
             EventBasedNetListener listener = new EventBasedNetListener();
             NetManager server = new NetManager(listener);
 
+            float pOnePosX = 0;
+            float pOnePosY = 0;
+            float pOnePosZ = 0;
+            float pTwoPosX = 0;
+            float pTwoPosY = 0;
+            float pTwoPosZ = 0;
+
             server.Start(2310 /* port */);
 
             listener.ConnectionRequestEvent += request =>
@@ -30,7 +37,7 @@ namespace Server
             {
                 Console.WriteLine("We got connection: {0}", peer.EndPoint);     // Show peer ip
 
-                NetDataWriter writer = new NetDataWriter();                     // Create writer class            
+                NetDataWriter writer = new NetDataWriter();                     // Create writer class         
                 writer.Put(peer.Id);                                 // Put some string
                 Console.WriteLine("Peers id: " + peer.Id);
                 peer.Send(writer, DeliveryMethod.ReliableOrdered);              // Send with reliability
@@ -44,34 +51,55 @@ namespace Server
 
             listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
             {
-                if (fromPeer.Id == 0)
-                {
-                    //string tempS = dataReader.GetString();
-                    float tempX = dataReader.GetFloat();
-                    float tempY = dataReader.GetFloat();
-                    float tempZ = dataReader.GetFloat();
-                    Console.WriteLine("We got your spawn position: " + tempX + " " + tempY + " " + tempZ + " from peer: " + fromPeer.Id);
+                string input = dataReader.GetString();
 
+                if (input == "SET POS")
+                {
+                    pOnePosX = dataReader.GetFloat();
+                    pOnePosY = dataReader.GetFloat();
+                    pOnePosZ = dataReader.GetFloat();
+                    Console.WriteLine("We got player 1 start position: " + pOnePosX + " " + pOnePosY + " " + pOnePosZ + " from peer: " + fromPeer.Id);
+
+                    pTwoPosX = dataReader.GetFloat();
+                    pTwoPosY = dataReader.GetFloat();
+                    pTwoPosZ = dataReader.GetFloat();
+                    Console.WriteLine("We got player 2 start position: " + pTwoPosX + " " + pTwoPosY + " " + pTwoPosZ + " from peer: " + fromPeer.Id);
+                }
+                else if (input == "A" || input == "D")
+                {
                     NetDataWriter writer = new NetDataWriter();
 
-                    //writer.Put(tempS);
-                    writer.Put(tempX);
-                    writer.Put(tempY);
-                    writer.Put(tempZ);
+                    if (fromPeer.Id == 0)
+                    {                        
+                        //Calculate new position:
+                        if (input == "A")
+                            pOnePosX += .2f;
+                        else if (input == "D")
+                            pOnePosX -= .2f;
+
+                        writer.Put(fromPeer.Id);       
+                        writer.Put("MOVE");
+                        writer.Put(pOnePosX);
+                        writer.Put(pOnePosY);
+                        writer.Put(pOnePosZ);
+                    }
+                    else
+                    {
+                        //Calculate new position:
+                        if (input == "A")
+                            pTwoPosX += .2f;
+                        else if (input == "D")
+                            pTwoPosX -= .2f;
+
+                        writer.Put(fromPeer.Id);        
+                        writer.Put("MOVE");
+                        writer.Put(pTwoPosX);
+                        writer.Put(pTwoPosY);
+                        writer.Put(pTwoPosZ);
+                    }
+
                     server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
                     writer.Reset();
-                }
-                else
-                {
-                    string ploo = dataReader.GetString();
-                    Console.WriteLine("We got your message: " + ploo + " from peer: " + fromPeer.Id);
-
-                    NetDataWriter writer = new NetDataWriter();
-                    writer.Put(ploo);
-                    server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
-
-                    //Console.WriteLine("We got: {0}", dataReader.GetString(100 /* max length of string */));
-                    dataReader.Recycle();
                 }
             };
 
