@@ -12,13 +12,17 @@ namespace Server
     class Server
     {
         enum GameState { Start, Game, Win }
-        GameState state;
         //If Win, send victory/loss messages
+
+        enum BallDir { Up, Down }
 
         static void Main(string[] args)
         {
             EventBasedNetListener listener = new EventBasedNetListener();
             NetManager server = new NetManager(listener);
+
+            GameState state = GameState.Start;
+            BallDir dir = BallDir.Up;
 
             //Player one position
             float pOnePosX = 0;
@@ -39,8 +43,8 @@ namespace Server
             bool pTwoColl = false;
             bool ballColl = false;
 
-
-            server.Start(2310 /* port */);
+            
+            server.Start(2310 /* port */);                                      //2310 is school port
 
             listener.ConnectionRequestEvent += request =>
             {
@@ -147,17 +151,35 @@ namespace Server
                 }
                 else if (input == "BALL MOVE")
                 {
+                    NetDataWriter writer = new NetDataWriter();
                     ballColl = collision;
+                    string ballDirection = "";
 
-                    if (!ballColl)
+                    if (ballColl)
                     {
-                        //Move ball
+                        if (dir == BallDir.Up)
+                            dir = BallDir.Down;
+                        else if (dir == BallDir.Down)
+                            dir = BallDir.Up;
                     }
-                    else
+
+                    ballPosX = dataReader.GetFloat();
+                    ballPosY = dataReader.GetFloat();
+                    ballPosZ = dataReader.GetFloat();
+
+                    if (dir == BallDir.Up)
                     {
-                        //Send command to change ball's course
-                        //writer.Put("BALL DIR CHANGE");
+                        ballDirection = "BALL UP";
                     }
+                    else if (dir == BallDir.Down)
+                    {
+                        ballDirection = "BALL DOWN";
+                    }
+
+                    writer.Put(fromPeer.Id);
+                    writer.Put(ballDirection);
+                    writer.Put(ballPosX);
+                    writer.Put(ballPosZ);
                 }
             };
 

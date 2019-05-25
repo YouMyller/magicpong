@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour
     Quaternion chara1Rot;
     Quaternion chara2Rot;
 
+
     // Start is called before the first frame update
     void Start()
     {

@@ -9,31 +9,37 @@ public class Ball : MonoBehaviour
 
     bool collision;
 
+    public enum Direction { Up, Down }
+    public Direction dir;
+
 
     // Start is called before the first frame update
     void Start()
     {
+        dir = Direction.Up;
         client = GameObject.FindGameObjectWithTag("Client").GetComponent<Client>();
         client.SendBallStartCoordinates(transform.position);
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        client.SendInput("BALL MOVE", collision);
+        if(dir == Direction.Up)
+        {
+            transform.Translate(Vector3.forward / 2);
+        }
+        else if(dir == Direction.Down)
+        {
+            transform.Translate(Vector3.back / 2);
+        }
     }
 
-    //Voitais kokeilla myös OnTriggerEnter jos tämä ei toimi (colliderit triggereiksi)
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision col)
     {
         this.collision = true;
+        client.UpdateBallCoordinates(transform.position, "BALL MOVE", collision);
 
         //If collision with victory wall, give point
-    }
-
-    private void OnCollisionExit(Collision collision)
-    {
-        this.collision = false;
     }
 
     //Kokeillaan tätä jos muu ei toimi

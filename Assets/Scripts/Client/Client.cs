@@ -71,13 +71,13 @@ public class Client : MonoBehaviour
             {
                 gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>(); //This should only happen once
                 tempInput = dataReader.GetString();
+
                 if (i == 0 && tempInput == "MOVE")
                 {
                     float posX = dataReader.GetFloat();            
                     gameManager.playerOne.transform.position = new Vector3(posX, gameManager.playerOne.transform.position.y, gameManager.playerOne.transform.position.z);
                     float posZ = dataReader.GetFloat();
                     gameManager.playerOne.transform.position = new Vector3(gameManager.playerOne.transform.position.x, gameManager.playerOne.transform.position.y, posZ);
-                    print(position);
                 }
                 else if (i == 1 && tempInput == "MOVE")
                 {
@@ -85,16 +85,34 @@ public class Client : MonoBehaviour
                     gameManager.playerTwo.transform.position = new Vector3(posX, gameManager.playerTwo.transform.position.y, gameManager.playerTwo.transform.position.z);
                     float posZ = dataReader.GetFloat();
                     gameManager.playerTwo.transform.position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
-                    print(position);
                 }
 
-                if(tempInput == "BALL MOVE")
+                if(tempInput == "BALL UP")
                 {
+                    player.ball.GetComponent<Ball>().dir = Ball.Direction.Up;
+
+                    float posX = dataReader.GetFloat();
+                    player.ball.transform.position = new Vector3(posX, player.ball.transform.position.y, player.ball.transform.position.z);
+                    float posZ = dataReader.GetFloat();
+                    player.ball.transform.position = new Vector3(player.ball.transform.position.x, player.ball.transform.position.y, posZ);
+                }
+                else if(tempInput == "BALL DOWN")
+                {
+                    player.ball.GetComponent<Ball>().dir = Ball.Direction.Down;
+
+                    float posX = dataReader.GetFloat();
+                    player.ball.transform.position = new Vector3(posX, player.ball.transform.position.y, player.ball.transform.position.z);
+                    float posZ = dataReader.GetFloat();
+                    player.ball.transform.position = new Vector3(player.ball.transform.position.x, player.ball.transform.position.y, posZ);
+                }
+                /*if(tempInput == "BALL MOVE")
+                {
+                    print("Oujee, pallo");
                     float posX = dataReader.GetFloat();
                     player.ball.transform.position = new Vector3(posX, gameManager.playerTwo.transform.position.y, gameManager.playerTwo.transform.position.z);
                     float posZ = dataReader.GetFloat();
                     player.ball.transform.position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
-                }
+                }*/
             }
 
             /*
@@ -114,7 +132,7 @@ public class Client : MonoBehaviour
     public void ConnectToServer()
     {
         client.Start();
-        client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);
+        client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);      //2310 is school port
     }
 
     /// <summary>
@@ -169,6 +187,23 @@ public class Client : MonoBehaviour
             writer.Put(pos.x);
             writer.Put(pos.y);
             writer.Put(pos.z);
+            peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            writer.Reset();
+        }
+    }
+
+    public void UpdateBallCoordinates(Vector3 pos, string input, bool collision)
+    {
+        if (id == 0)
+        {
+            var writer = new NetDataWriter();
+
+            writer.Put(input);
+            writer.Put(collision);
+            writer.Put(pos.x);
+            writer.Put(pos.y);
+            writer.Put(pos.z);
+
             peer.Send(writer, DeliveryMethod.ReliableOrdered);
             writer.Reset();
         }
