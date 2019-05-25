@@ -7,13 +7,13 @@ public class GameManager : MonoBehaviour
     private Client client;
 
     public GameObject player;
+    [HideInInspector]
     public GameObject playerOne;
+    [HideInInspector]
     public GameObject playerTwo;
 
     private Transform spawnPoint1;
     private Transform spawnPoint2;
-
-    public GameObject ball;
     
     Quaternion chara1Rot;
     Quaternion chara2Rot;

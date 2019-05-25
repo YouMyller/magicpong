@@ -30,6 +30,11 @@ namespace Server
             float pTwoPosY = 0;
             float pTwoPosZ = 0;
 
+            //Ball position
+            float ballPosX = 0;
+            float ballPosY = 0;
+            float ballPosZ = 0;
+
             bool pOneColl = false;
             bool pTwoColl = false;
             bool ballColl = false;
@@ -83,6 +88,13 @@ namespace Server
                         Console.WriteLine("We got player 2 start position: " + pTwoPosX + " " + pTwoPosY + " " + pTwoPosZ + " from peer: " + fromPeer.Id);
                     }
                 }
+                else if(input == "SET BALL POS")
+                {
+                    ballPosX = dataReader.GetFloat();
+                    ballPosY = dataReader.GetFloat();
+                    ballPosZ = dataReader.GetFloat();
+                    Console.WriteLine("We got ball start position: " + ballPosX + " " + ballPosY + " " + ballPosZ + " from peer: " + fromPeer.Id);
+                }
                 else if (input == "A" || input == "D")
                 {
                     NetDataWriter writer = new NetDataWriter();
@@ -106,6 +118,8 @@ namespace Server
 
                             Console.WriteLine("Player 1 brand new pos: " + pOnePosX + " " + pOnePosY + " " + pOnePosZ + " from peer: " + fromPeer.Id);
                         }
+                        else
+                            Console.WriteLine("Peer " + fromPeer.Id + " is colliding");
                     }
                     else
                     {

@@ -26,6 +26,8 @@ public class Client : MonoBehaviour
 
     public bool server;
 
+    private string prevInput;
+
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -75,7 +77,6 @@ public class Client : MonoBehaviour
                     gameManager.playerOne.transform.position = new Vector3(posX, gameManager.playerOne.transform.position.y, gameManager.playerOne.transform.position.z);
                     float posZ = dataReader.GetFloat();
                     gameManager.playerOne.transform.position = new Vector3(gameManager.playerOne.transform.position.x, gameManager.playerOne.transform.position.y, posZ);
-                    Debug.Log("Move player one: " + posX + posZ);
                     print(position);
                 }
                 else if (i == 1 && tempInput == "MOVE")
@@ -84,7 +85,6 @@ public class Client : MonoBehaviour
                     gameManager.playerTwo.transform.position = new Vector3(posX, gameManager.playerTwo.transform.position.y, gameManager.playerTwo.transform.position.z);
                     float posZ = dataReader.GetFloat();
                     gameManager.playerTwo.transform.position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
-                    Debug.Log("Move player two: " + posX + posZ);
                     print(position);
                 }
 
@@ -150,6 +150,7 @@ public class Client : MonoBehaviour
         var writer = new NetDataWriter();
 
         writer.Put("SET POS");
+        writer.Put(false);
         writer.Put(pos.x);
         writer.Put(pos.y);
         writer.Put(pos.z);
@@ -159,24 +160,36 @@ public class Client : MonoBehaviour
 
     public void SendBallStartCoordinates(Vector3 pos)
     {
-        var writer = new NetDataWriter();
+        if (id == 0)
+        {
+            var writer = new NetDataWriter();
 
-        writer.Put("SET BALL POS");
-        writer.Put(pos.x);
-        writer.Put(pos.y);
-        writer.Put(pos.z);
-        peer.Send(writer, DeliveryMethod.ReliableOrdered);
-        writer.Reset();
+            writer.Put("SET BALL POS");
+            writer.Put(false);
+            writer.Put(pos.x);
+            writer.Put(pos.y);
+            writer.Put(pos.z);
+            peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            writer.Reset();
+        }
     }
 
     public void SendInput(string input, bool collision)
     {
+        if (collision && input != prevInput)
+        {
+            collision = false;
+            player.Collision = false;
+        }
+
         var writer = new NetDataWriter();
 
         writer.Put(input);
         writer.Put(collision);
         peer.Send(writer, DeliveryMethod.ReliableOrdered);
         writer.Reset();
+
+        prevInput = input;
     }
 
     private void OnDestroy()

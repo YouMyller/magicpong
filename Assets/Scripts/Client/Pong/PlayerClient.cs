@@ -6,12 +6,12 @@ public class PlayerClient : MonoBehaviour
 {
     private Client client;
 
-    public Ball ball;
+    public GameObject ball;
 
     private int speed = 1;
     private int id;
 
-    private bool collision;
+    public bool Collision;
 
     private Transform ballSpawnPoint;
 
@@ -25,8 +25,9 @@ public class PlayerClient : MonoBehaviour
 
         client.SendPlayerStartCoordinates(transform.position);
 
-        ballSpawnPoint = GameObject.FindGameObjectWithTag("BallSpawnPoint").transform;      //Doesn't actually exist
-        //Spawn ball
+        ballSpawnPoint = GameObject.FindGameObjectWithTag("BallSpawnPoint").transform;
+        ball = Instantiate(ball, ballSpawnPoint);
+        client.SendBallStartCoordinates(ballSpawnPoint.position);
     }
 
     // Update is called once per frame
@@ -35,11 +36,25 @@ public class PlayerClient : MonoBehaviour
         //Move left/right
         if (Input.GetKey(KeyCode.D))
         {
-            client.SendInput("D", collision);
+            client.SendInput("D", Collision);
         }
         else if (Input.GetKey(KeyCode.A))
         {
-            client.SendInput("A", collision);
+            client.SendInput("A", Collision);
         }
     }
+
+    //Voitais kokeilla myös OnTriggerEnter jos tämä ei toimi (colliderit triggereiksi)
+    private void OnTriggerEnter(Collider collision)
+    {
+        this.Collision = true;
+        print("Colliding");
+        //If collision with victory wall, give point
+    }
+
+    //Kokeillaan tätä jos muu ei toimi
+    /*bool IsColliding(Vector3 startPoint, Vector3 endPoint, float width)
+    {
+        return Physics.CheckCapsule(startPoint, endPoint, width);
+    }*/
 }

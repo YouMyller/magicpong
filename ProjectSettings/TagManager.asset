@@ -12,6 +12,7 @@ TagManager:
   - SpawnPoint1
   - SpawnPoint2
   - GameManager
+  - BallSpawnPoint
   layers:
   - Default
   - TransparentFX
