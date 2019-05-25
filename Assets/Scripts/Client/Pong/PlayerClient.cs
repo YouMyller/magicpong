@@ -7,6 +7,7 @@ public class PlayerClient : MonoBehaviour
     private Client client;
 
     public GameObject ball;
+    public GameObject newBall;
 
     private int speed = 1;
     private int id;
@@ -26,7 +27,7 @@ public class PlayerClient : MonoBehaviour
         client.SendPlayerStartCoordinates(transform.position);
 
         ballSpawnPoint = GameObject.FindGameObjectWithTag("BallSpawnPoint").transform;
-        ball = Instantiate(ball, ballSpawnPoint);
+        newBall = Instantiate(ball, ballSpawnPoint);
         client.SendBallStartCoordinates(ballSpawnPoint.position);
     }
 

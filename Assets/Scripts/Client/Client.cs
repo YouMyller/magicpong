@@ -71,6 +71,7 @@ public class Client : MonoBehaviour
             {
                 gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>(); //This should only happen once
                 tempInput = dataReader.GetString();
+                print("Received input from server: " + tempInput);
 
                 if (i == 0 && tempInput == "MOVE")
                 {
@@ -87,40 +88,27 @@ public class Client : MonoBehaviour
                     gameManager.playerTwo.transform.position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
                 }
 
-                if(tempInput == "BALL UP")
+                if (tempInput == "BALL UP")
                 {
-                    player.ball.GetComponent<Ball>().dir = Ball.Direction.Up;
+                    print("Wadap at ball is going up");
+                    player.newBall.GetComponent<Ball>().dir = Ball.Direction.Up;
 
                     float posX = dataReader.GetFloat();
-                    player.ball.transform.position = new Vector3(posX, player.ball.transform.position.y, player.ball.transform.position.z);
+                    player.newBall.transform.position = new Vector3(posX, player.newBall.transform.position.y, player.newBall.transform.position.z);
                     float posZ = dataReader.GetFloat();
-                    player.ball.transform.position = new Vector3(player.ball.transform.position.x, player.ball.transform.position.y, posZ);
+                    player.newBall.transform.position = new Vector3(player.newBall.transform.position.x, player.newBall.transform.position.y, posZ);
                 }
-                else if(tempInput == "BALL DOWN")
+                else if (tempInput == "BALL DOWN")
                 {
-                    player.ball.GetComponent<Ball>().dir = Ball.Direction.Down;
+                    print("Wadap at ball is going down");
+                    player.newBall.GetComponent<Ball>().dir = Ball.Direction.Down;
 
                     float posX = dataReader.GetFloat();
-                    player.ball.transform.position = new Vector3(posX, player.ball.transform.position.y, player.ball.transform.position.z);
+                    player.newBall.transform.position = new Vector3(posX, player.newBall.transform.position.y, player.newBall.transform.position.z);
                     float posZ = dataReader.GetFloat();
-                    player.ball.transform.position = new Vector3(player.ball.transform.position.x, player.ball.transform.position.y, posZ);
+                    player.newBall.transform.position = new Vector3(player.newBall.transform.position.x, player.newBall.transform.position.y, posZ);
                 }
-                /*if(tempInput == "BALL MOVE")
-                {
-                    print("Oujee, pallo");
-                    float posX = dataReader.GetFloat();
-                    player.ball.transform.position = new Vector3(posX, gameManager.playerTwo.transform.position.y, gameManager.playerTwo.transform.position.z);
-                    float posZ = dataReader.GetFloat();
-                    player.ball.transform.position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
-                }*/
             }
-
-            /*
-            if (tempInput == "CHAT")
-            {
-                ChatInput(tempInput);
-            }
-            */
 
             dataReader.Recycle();
         };

@@ -26,11 +26,11 @@ public class Ball : MonoBehaviour
     {
         if(dir == Direction.Up)
         {
-            transform.Translate(Vector3.forward / 2);
+            transform.Translate(Vector3.forward / 4);
         }
         else if(dir == Direction.Down)
         {
-            transform.Translate(Vector3.back / 2);
+            transform.Translate(Vector3.back / 4);
         }
     }
 
@@ -38,6 +38,14 @@ public class Ball : MonoBehaviour
     {
         this.collision = true;
         client.UpdateBallCoordinates(transform.position, "BALL MOVE", collision);
+        print("Ball colliding");
+    }
+
+    private void OnTriggerEnter(Collider col)
+    {
+        this.collision = true;
+        client.UpdateBallCoordinates(transform.position, "BALL MOVE", collision);
+        print("Ball colliding at trigger");
 
         //If collision with victory wall, give point
     }

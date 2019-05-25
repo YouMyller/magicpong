@@ -99,7 +99,8 @@ namespace Server
                     ballPosZ = dataReader.GetFloat();
                     Console.WriteLine("We got ball start position: " + ballPosX + " " + ballPosY + " " + ballPosZ + " from peer: " + fromPeer.Id);
                 }
-                else if (input == "A" || input == "D")
+
+                if (input == "A" || input == "D")
                 {
                     NetDataWriter writer = new NetDataWriter();
 
@@ -149,7 +150,8 @@ namespace Server
                     server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
                     writer.Reset();
                 }
-                else if (input == "BALL MOVE")
+
+                if (input == "BALL MOVE")
                 {
                     NetDataWriter writer = new NetDataWriter();
                     ballColl = collision;
@@ -157,10 +159,14 @@ namespace Server
 
                     if (ballColl)
                     {
+                        Console.WriteLine("Ball is colliding! Direction is " + dir);    //Joo
+
                         if (dir == BallDir.Up)
                             dir = BallDir.Down;
                         else if (dir == BallDir.Down)
                             dir = BallDir.Up;
+
+                        Console.WriteLine("Changed direction is " + dir);    
                     }
 
                     ballPosX = dataReader.GetFloat();
@@ -180,6 +186,9 @@ namespace Server
                     writer.Put(ballDirection);
                     writer.Put(ballPosX);
                     writer.Put(ballPosZ);
+                    server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+                    writer.Reset();
+                    Console.WriteLine("Sent ball information to client: " + ballDirection);
                 }
             };
 
