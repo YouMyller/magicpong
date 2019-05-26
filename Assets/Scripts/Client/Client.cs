@@ -59,19 +59,18 @@ public class Client : MonoBehaviour
             string tempInput = "";
 
             i = dataReader.GetInt();
-            print("Get player id: " + i);
+            //print("Get player id: " + i);
 
             if (i == 0 || i == 1)
             {
                 id = i;
-                Debug.Log("Player id: " + id);
+                //Debug.Log("Player id: " + id);
             }
 
             if (player != null)
             {
                 gameManager = GameObject.FindGameObjectWithTag("GameManager").GetComponent<GameManager>(); //This should only happen once
                 tempInput = dataReader.GetString();
-                print("Received input from server: " + tempInput);
 
                 if (i == 0 && tempInput == "MOVE")
                 {
@@ -107,6 +106,26 @@ public class Client : MonoBehaviour
                     player.newBall.transform.position = new Vector3(posX, player.newBall.transform.position.y, player.newBall.transform.position.z);
                     float posZ = dataReader.GetFloat();
                     player.newBall.transform.position = new Vector3(player.newBall.transform.position.x, player.newBall.transform.position.y, posZ);
+                }
+
+                if(tempInput == "UPDATE POINTS")
+                {
+                    if(i == 0)
+                    {
+                        gameManager.pOnePoints++;
+                        gameManager.UpdateUI();
+                    }
+                    else
+                    {
+                        gameManager.pTwoPoints++;
+                        gameManager.UpdateUI();
+                    }
+                }
+
+                if(tempInput == "WINNER")
+                {
+                    gameManager.EndGame(i);
+                    player.GameOver = true;
                 }
             }
 
@@ -213,6 +232,32 @@ public class Client : MonoBehaviour
         writer.Reset();
 
         prevInput = input;
+    }
+
+    public void GivePoint(string input, bool playerOne)
+    {
+        if (id == 0)
+        {
+            var writer = new NetDataWriter();
+
+            writer.Put(input);
+            writer.Put(playerOne);
+            peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            writer.Reset();
+        }
+    }
+
+    public void DeclareWinner(string input, bool pOneWins)
+    {
+        if(id == 0)
+        {
+            var writer = new NetDataWriter();
+
+            writer.Put(input);
+            writer.Put(pOneWins);
+            peer.Send(writer, DeliveryMethod.ReliableOrdered);
+            writer.Reset();
+        }
     }
 
     private void OnDestroy()

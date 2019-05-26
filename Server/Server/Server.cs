@@ -43,6 +43,8 @@ namespace Server
             bool pTwoColl = false;
             bool ballColl = false;
 
+            int pOnePoints = 0;
+            int pTwoPoints = 0;
             
             server.Start(2310 /* port */);                                      //2310 is school port
 
@@ -74,6 +76,7 @@ namespace Server
             {
                 string input = dataReader.GetString();
                 bool collision = dataReader.GetBool();
+                //bool collisionHolder = false;
 
                 if (input == "SET POS")
                 {
@@ -159,7 +162,7 @@ namespace Server
 
                     if (ballColl)
                     {
-                        Console.WriteLine("Ball is colliding! Direction is " + dir);    //Joo
+                        Console.WriteLine("Ball is colliding! Direction is " + dir);    
 
                         if (dir == BallDir.Up)
                             dir = BallDir.Down;
@@ -174,13 +177,9 @@ namespace Server
                     ballPosZ = dataReader.GetFloat();
 
                     if (dir == BallDir.Up)
-                    {
                         ballDirection = "BALL UP";
-                    }
                     else if (dir == BallDir.Down)
-                    {
                         ballDirection = "BALL DOWN";
-                    }
 
                     writer.Put(fromPeer.Id);
                     writer.Put(ballDirection);
@@ -189,6 +188,53 @@ namespace Server
                     server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
                     writer.Reset();
                     Console.WriteLine("Sent ball information to client: " + ballDirection);
+                }
+
+                if(input == "POINT")
+                {
+                    NetDataWriter writer = new NetDataWriter();
+                    bool pointForPlayerOne = collision;
+                    int awardedPlayer;
+
+                    if(pointForPlayerOne)
+                    {
+                        pOnePoints++;
+                        awardedPlayer = 0;
+                    }
+                    else
+                    {
+                        pTwoPoints++;
+                        awardedPlayer = 1;
+                    }
+
+                    writer.Put(awardedPlayer);
+                    writer.Put("UPDATE POINTS");
+                    Console.WriteLine("Huzzah! A player was awarded with points: " + awardedPlayer);
+                    server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+                    writer.Reset();
+                    dir = BallDir.Up;
+                }
+
+                if(input == "WINNER")
+                {
+                    NetDataWriter writer = new NetDataWriter();
+                    bool pOneWins = collision;
+                    int winnerPlayer;
+
+                    if(pOneWins)
+                    {
+                        winnerPlayer = 0;
+                    }
+                    else
+                    {
+                        winnerPlayer = 1;
+                    }
+
+                    Console.WriteLine("Congartulations! You won, player " + winnerPlayer + "!");
+                    writer.Put(winnerPlayer);
+                    writer.Put("WINNER");
+                    server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
+                    writer.Reset();
                 }
             };
 

@@ -13,6 +13,11 @@ TagManager:
   - SpawnPoint2
   - GameManager
   - BallSpawnPoint
+  - Goal1
+  - Goal2
+  - BallSpawnPoint2
+  - BallSpawnPoint3
+  - Canvas
   layers:
   - Default
   - TransparentFX

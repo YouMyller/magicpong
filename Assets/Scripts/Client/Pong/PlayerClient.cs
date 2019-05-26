@@ -14,7 +14,12 @@ public class PlayerClient : MonoBehaviour
 
     public bool Collision;
 
-    private Transform ballSpawnPoint;
+    private Transform ballSpawnPoint1;
+    private Transform ballSpawnPoint2;
+    private Transform ballSpawnPoint3;
+    private Transform currentSpawnPoint;
+
+    public bool GameOver = false;
 
     // Start is called before the first frame update
     void Start()
@@ -26,9 +31,27 @@ public class PlayerClient : MonoBehaviour
 
         client.SendPlayerStartCoordinates(transform.position);
 
-        ballSpawnPoint = GameObject.FindGameObjectWithTag("BallSpawnPoint").transform;
-        newBall = Instantiate(ball, ballSpawnPoint);
-        client.SendBallStartCoordinates(ballSpawnPoint.position);
+        ballSpawnPoint1 = GameObject.FindGameObjectWithTag("BallSpawnPoint").transform;
+        ballSpawnPoint2 = GameObject.FindGameObjectWithTag("BallSpawnPoint2").transform;
+        ballSpawnPoint3 = GameObject.FindGameObjectWithTag("BallSpawnPoint3").transform;
+        currentSpawnPoint = ballSpawnPoint1;
+
+        InstantiateBall();
+    }
+
+    private void Update()
+    {
+        if(newBall == null && GameOver == false)         
+        {
+            if (currentSpawnPoint == ballSpawnPoint1)
+                currentSpawnPoint = ballSpawnPoint2;
+            else if (currentSpawnPoint == ballSpawnPoint2)
+                currentSpawnPoint = ballSpawnPoint3;
+            else if (currentSpawnPoint == ballSpawnPoint3)
+                currentSpawnPoint = ballSpawnPoint1;
+
+            InstantiateBall();
+        }
     }
 
     // Update is called once per frame
@@ -43,6 +66,11 @@ public class PlayerClient : MonoBehaviour
         {
             client.SendInput("A", Collision);
         }
+    }
+
+    private void InstantiateBall()
+    {
+        newBall = Instantiate(ball, currentSpawnPoint);
     }
 
     //Voitais kokeilla myös OnTriggerEnter jos tämä ei toimi (colliderit triggereiksi)

@@ -25,34 +25,34 @@ public class Ball : MonoBehaviour
     void FixedUpdate()
     {
         if(dir == Direction.Up)
-        {
             transform.Translate(Vector3.forward / 4);
-        }
         else if(dir == Direction.Down)
-        {
             transform.Translate(Vector3.back / 4);
-        }
     }
 
     private void OnCollisionEnter(Collision col)
     {
-        this.collision = true;
-        client.UpdateBallCoordinates(transform.position, "BALL MOVE", collision);
-        print("Ball colliding");
+        print(col.gameObject);
+
+        if (col.gameObject.tag == "Player")
+        {
+            if (dir == Direction.Up)
+            {
+                client.GivePoint("POINT", true);       //if true, give player 1 point
+                Destroy(gameObject);
+            }
+            else if (dir == Direction.Down)
+            {
+                client.GivePoint("POINT", false);       //if false, give player 2 point
+                Destroy(gameObject);
+            }
+        }
+        else
+        {
+            this.collision = true;
+            client.UpdateBallCoordinates(transform.position, "BALL MOVE", collision);
+        }
     }
 
-    private void OnTriggerEnter(Collider col)
-    {
-        this.collision = true;
-        client.UpdateBallCoordinates(transform.position, "BALL MOVE", collision);
-        print("Ball colliding at trigger");
-
-        //If collision with victory wall, give point
-    }
-
-    //Kokeillaan tätä jos muu ei toimi
-    /*bool IsColliding(Vector3 startPoint, Vector3 endPoint, float width)
-    {
-        return Physics.CheckCapsule(startPoint, endPoint, width);
-    }*/
+    //method for rotation, which gets permission to rotate from server?
 }
