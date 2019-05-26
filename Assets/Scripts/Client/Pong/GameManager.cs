@@ -78,12 +78,8 @@ public class GameManager : MonoBehaviour
         winText.gameObject.SetActive(true);
 
         if(winner == 0)
-        {
             winText.text = "PLAYER 1 WON.\nTo play again, please restart the application.";
-        }
         else
-        {
             winText.text = "PLAYER 2 WON.\nTo play again, please restart the application.";
-        }
     }
 }

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerClient : MonoBehaviour
 {
@@ -9,7 +7,6 @@ public class PlayerClient : MonoBehaviour
     public GameObject ball;
     public GameObject newBall;
 
-    private int speed = 1;
     private int id;
 
     public bool Collision;
@@ -59,13 +56,9 @@ public class PlayerClient : MonoBehaviour
     {
         //Move left/right
         if (Input.GetKey(KeyCode.D))
-        {
             client.SendInput("D", Collision);
-        }
         else if (Input.GetKey(KeyCode.A))
-        {
             client.SendInput("A", Collision);
-        }
     }
 
     private void InstantiateBall()
@@ -73,17 +66,9 @@ public class PlayerClient : MonoBehaviour
         newBall = Instantiate(ball, currentSpawnPoint);
     }
 
-    //Voitais kokeilla myös OnTriggerEnter jos tämä ei toimi (colliderit triggereiksi)
     private void OnTriggerEnter(Collider collision)
     {
         this.Collision = true;
         print("Colliding");
-        //If collision with victory wall, give point
     }
-
-    //Kokeillaan tätä jos muu ei toimi
-    /*bool IsColliding(Vector3 startPoint, Vector3 endPoint, float width)
-    {
-        return Physics.CheckCapsule(startPoint, endPoint, width);
-    }*/
 }

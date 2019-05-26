@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
     private Client client;
-    private int speed = 1;
 
     bool collision;
 
@@ -32,8 +29,6 @@ public class Ball : MonoBehaviour
 
     private void OnCollisionEnter(Collision col)
     {
-        print(col.gameObject);
-
         if (col.gameObject.tag == "Player")
         {
             if (dir == Direction.Up)
@@ -53,6 +48,4 @@ public class Ball : MonoBehaviour
             client.UpdateBallCoordinates(transform.position, "BALL MOVE", collision);
         }
     }
-
-    //method for rotation, which gets permission to rotate from server?
 }

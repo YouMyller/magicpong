@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using LiteNetLib;
@@ -49,7 +45,6 @@ public class Client : MonoBehaviour
     void Update()
     {
         client.PollEvents();
-        //Thread.Sleep(15);
 
         peer = client.FirstPeer;
 
@@ -59,13 +54,9 @@ public class Client : MonoBehaviour
             string tempInput = "";
 
             i = dataReader.GetInt();
-            //print("Get player id: " + i);
 
             if (i == 0 || i == 1)
-            {
                 id = i;
-                //Debug.Log("Player id: " + id);
-            }
 
             if (player != null)
             {
@@ -89,7 +80,6 @@ public class Client : MonoBehaviour
 
                 if (tempInput == "BALL UP")
                 {
-                    print("Wadap at ball is going up");
                     player.newBall.GetComponent<Ball>().dir = Ball.Direction.Up;
 
                     float posX = dataReader.GetFloat();
@@ -99,7 +89,6 @@ public class Client : MonoBehaviour
                 }
                 else if (tempInput == "BALL DOWN")
                 {
-                    print("Wadap at ball is going down");
                     player.newBall.GetComponent<Ball>().dir = Ball.Direction.Down;
 
                     float posX = dataReader.GetFloat();
