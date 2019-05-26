@@ -7,12 +7,19 @@ public class PlayerClient : MonoBehaviour
     private Client client;
 
     public GameObject ball;
-    public GameObject newBall;
+    public GameObject newBall1;
+    public GameObject newBall2;
+
+    public List<GameObject> balls = new List<GameObject>();
+
+    public Vector3 ballStartPos;
 
     private int speed = 1;
     private int id;
 
     public bool Collision;
+    private bool shootingDone;
+    public bool ballBackToStart;
 
     private Transform ballSpawnPoint;
 
@@ -20,20 +27,19 @@ public class PlayerClient : MonoBehaviour
     void Start()
     {
         client = GameObject.FindGameObjectWithTag("Client").GetComponent<Client>();
-        client.player = this;
+        client.playerClient = this;
         id = client.id;
-        Debug.Log(id);
+        //Debug.Log(id);
 
         client.SendPlayerStartCoordinates(transform.position);
-
-        ballSpawnPoint = GameObject.FindGameObjectWithTag("BallSpawnPoint").transform;
-        newBall = Instantiate(ball, ballSpawnPoint);
-        client.SendBallStartCoordinates(ballSpawnPoint.position);
+        ballStartPos = new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.5f);
+        shootingDone = true;
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        ballStartPos.x = transform.position.x;
         //Move left/right
         if (Input.GetKey(KeyCode.D))
         {
@@ -43,6 +49,31 @@ public class PlayerClient : MonoBehaviour
         {
             client.SendInput("A", Collision);
         }
+
+        if (Input.GetKey(KeyCode.Mouse0) && shootingDone == true)
+        {
+            StartCoroutine(Shoot());
+            shootingDone = false;
+        }
+    }
+
+    private IEnumerator Shoot()
+    {
+        if (balls.Count < 1)
+        {
+            newBall1 = Instantiate(ball, ballStartPos, Quaternion.identity);
+            balls.Add(newBall1);
+        }
+        else if (balls.Count >= 1)
+        {
+            balls[0].transform.position = ballStartPos;
+            ballBackToStart = true;
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        shootingDone = true;
+        yield return null;
     }
 
     //Voitais kokeilla myös OnTriggerEnter jos tämä ei toimi (colliderit triggereiksi)
@@ -52,10 +83,4 @@ public class PlayerClient : MonoBehaviour
         print("Colliding");
         //If collision with victory wall, give point
     }
-
-    //Kokeillaan tätä jos muu ei toimi
-    /*bool IsColliding(Vector3 startPoint, Vector3 endPoint, float width)
-    {
-        return Physics.CheckCapsule(startPoint, endPoint, width);
-    }*/
 }

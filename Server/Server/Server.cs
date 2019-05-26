@@ -43,7 +43,7 @@ namespace Server
             bool pTwoColl = false;
             bool ballColl = false;
 
-            
+
             server.Start(2310 /* port */);                                      //2310 is school port
 
             listener.ConnectionRequestEvent += request =>
@@ -91,13 +91,6 @@ namespace Server
                         pTwoPosZ = dataReader.GetFloat();
                         Console.WriteLine("We got player 2 start position: " + pTwoPosX + " " + pTwoPosY + " " + pTwoPosZ + " from peer: " + fromPeer.Id);
                     }
-                }
-                else if(input == "SET BALL POS")
-                {
-                    ballPosX = dataReader.GetFloat();
-                    ballPosY = dataReader.GetFloat();
-                    ballPosZ = dataReader.GetFloat();
-                    Console.WriteLine("We got ball start position: " + ballPosX + " " + ballPosY + " " + ballPosZ + " from peer: " + fromPeer.Id);
                 }
 
                 if (input == "A" || input == "D")
@@ -155,40 +148,27 @@ namespace Server
                 {
                     NetDataWriter writer = new NetDataWriter();
                     ballColl = collision;
-                    string ballDirection = "";
-
-                    if (ballColl)
-                    {
-                        Console.WriteLine("Ball is colliding! Direction is " + dir);    //Joo
-
-                        if (dir == BallDir.Up)
-                            dir = BallDir.Down;
-                        else if (dir == BallDir.Down)
-                            dir = BallDir.Up;
-
-                        Console.WriteLine("Changed direction is " + dir);    
-                    }
 
                     ballPosX = dataReader.GetFloat();
                     ballPosY = dataReader.GetFloat();
                     ballPosZ = dataReader.GetFloat();
 
-                    if (dir == BallDir.Up)
+                    if (fromPeer.Id == 0)
+                        ballPosZ += 0.9f;
+                    else if (fromPeer.Id == 1)
+                        ballPosZ -= 0.9f;
+                    
+                    if (ballColl)
                     {
-                        ballDirection = "BALL UP";
-                    }
-                    else if (dir == BallDir.Down)
-                    {
-                        ballDirection = "BALL DOWN";
+                        Console.WriteLine("Ball is colliding! Direction is " + dir);    
                     }
 
                     writer.Put(fromPeer.Id);
-                    writer.Put(ballDirection);
+                    writer.Put(input);
                     writer.Put(ballPosX);
                     writer.Put(ballPosZ);
                     server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
                     writer.Reset();
-                    Console.WriteLine("Sent ball information to client: " + ballDirection);
                 }
             };
 
