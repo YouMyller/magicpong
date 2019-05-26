@@ -88,6 +88,11 @@ public class Client : MonoBehaviour
                     gameManager.playerTwo.transform.position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
                 }
 
+                if(tempInput == "SHOOT")
+                {
+                    player.CreateBall(id);
+                }
+
                 if (tempInput == "BALL UP")
                 {
                     print("Wadap at ball is going up");

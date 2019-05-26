@@ -14,7 +14,10 @@ public class PlayerClient : MonoBehaviour
 
     public bool Collision;
 
-    private Transform ballSpawnPoint;
+    private Transform ballSpawnPoint1;
+    private Transform ballSpawnPoint2;
+
+    private GameManager gm;
 
     // Start is called before the first frame update
     void Start()
@@ -24,11 +27,11 @@ public class PlayerClient : MonoBehaviour
         id = client.id;
         Debug.Log(id);
 
-        client.SendPlayerStartCoordinates(transform.position);
+        gm = FindObjectOfType<GameManager>();
+        ballSpawnPoint1 = gm.playerOne.transform.Find("BallSpawnPoint");
+        ballSpawnPoint2 = gm.playerTwo.transform.Find("BallSpawnPoint");
 
-        ballSpawnPoint = GameObject.FindGameObjectWithTag("BallSpawnPoint").transform;
-        newBall = Instantiate(ball, ballSpawnPoint);
-        client.SendBallStartCoordinates(ballSpawnPoint.position);
+        client.SendPlayerStartCoordinates(transform.position);
     }
 
     // Update is called once per frame
@@ -36,12 +39,27 @@ public class PlayerClient : MonoBehaviour
     {
         //Move left/right
         if (Input.GetKey(KeyCode.D))
-        {
             client.SendInput("D", Collision);
-        }
         else if (Input.GetKey(KeyCode.A))
-        {
             client.SendInput("A", Collision);
+
+        if (Input.GetKeyUp(KeyCode.Space))
+            client.SendInput("SHOOT", Collision);
+    }
+
+    public void CreateBall(int i)
+    {
+        if (i == 0)
+        {
+            newBall = Instantiate(ball, ballSpawnPoint1);
+            newBall.GetComponent<Ball>().dir = Ball.Direction.Up;
+            client.SendBallStartCoordinates(ballSpawnPoint1.position);
+        }
+        else
+        {
+            newBall = Instantiate(ball, ballSpawnPoint2);
+            newBall.GetComponent<Ball>().dir = Ball.Direction.Down;
+            client.SendBallStartCoordinates(ballSpawnPoint2.position);
         }
     }
 
@@ -52,10 +70,4 @@ public class PlayerClient : MonoBehaviour
         print("Colliding");
         //If collision with victory wall, give point
     }
-
-    //Kokeillaan tätä jos muu ei toimi
-    /*bool IsColliding(Vector3 startPoint, Vector3 endPoint, float width)
-    {
-        return Physics.CheckCapsule(startPoint, endPoint, width);
-    }*/
 }

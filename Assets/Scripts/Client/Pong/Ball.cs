@@ -25,13 +25,9 @@ public class Ball : MonoBehaviour
     void FixedUpdate()
     {
         if(dir == Direction.Up)
-        {
             transform.Translate(Vector3.forward / 4);
-        }
         else if(dir == Direction.Down)
-        {
             transform.Translate(Vector3.back / 4);
-        }
     }
 
     private void OnCollisionEnter(Collision col)

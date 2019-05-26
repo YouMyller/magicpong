@@ -14,7 +14,7 @@ namespace Server
         enum GameState { Start, Game, Win }
         //If Win, send victory/loss messages
 
-        enum BallDir { Up, Down }
+        enum BallOneDir { Up, Down }
 
         static void Main(string[] args)
         {
@@ -22,7 +22,7 @@ namespace Server
             NetManager server = new NetManager(listener);
 
             GameState state = GameState.Start;
-            BallDir dir = BallDir.Up;
+            BallOneDir dir = BallOneDir.Up;
 
             //Player one position
             float pOnePosX = 0;
@@ -151,6 +151,26 @@ namespace Server
                     writer.Reset();
                 }
 
+                if(input == "SHOOT")
+                {
+                    NetDataWriter writer = new NetDataWriter();
+
+                    if (fromPeer.Id == 0)
+                    {
+                        writer.Put(fromPeer.Id);
+                        writer.Put("SHOOT");
+
+                        Console.WriteLine("Player 1 shot out a bullet!");
+                    }
+                    else
+                    {
+                        writer.Put(fromPeer.Id);
+                        writer.Put("SHOOT");
+
+                        Console.WriteLine("Player 2 shot out a bullet!");
+                    }
+                }
+
                 if (input == "BALL MOVE")
                 {
                     NetDataWriter writer = new NetDataWriter();
@@ -159,28 +179,24 @@ namespace Server
 
                     if (ballColl)
                     {
-                        Console.WriteLine("Ball is colliding! Direction is " + dir);    //Joo
+                        /*Console.WriteLine("Ball is colliding! Direction is " + dir);    //Joo
 
-                        if (dir == BallDir.Up)
-                            dir = BallDir.Down;
-                        else if (dir == BallDir.Down)
-                            dir = BallDir.Up;
+                        if (dir == BallOneDir.Up)
+                            dir = BallOneDir.Down;
+                        else if (dir == BallOneDir.Down)
+                            dir = BallOneDir.Up;
 
-                        Console.WriteLine("Changed direction is " + dir);    
+                        Console.WriteLine("Changed direction is " + dir); */   
                     }
 
                     ballPosX = dataReader.GetFloat();
                     ballPosY = dataReader.GetFloat();
                     ballPosZ = dataReader.GetFloat();
 
-                    if (dir == BallDir.Up)
-                    {
+                    if (dir == BallOneDir.Up)
                         ballDirection = "BALL UP";
-                    }
-                    else if (dir == BallDir.Down)
-                    {
+                    else if (dir == BallOneDir.Down)
                         ballDirection = "BALL DOWN";
-                    }
 
                     writer.Put(fromPeer.Id);
                     writer.Put(ballDirection);
