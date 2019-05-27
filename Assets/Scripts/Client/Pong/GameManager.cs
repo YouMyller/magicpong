@@ -47,7 +47,8 @@ public class GameManager : MonoBehaviour
         SpawnPlayers();
 
         connection = "URI=file:" + Application.dataPath + "/Database/database.s3db";
-        UpdateScores(0, 50);
+        UpdateScores(0, 0, true);
+        UpdateScores(1, 0, true);
     }
 
     public void SpawnPlayers()
@@ -71,6 +72,10 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Update UI scores directly from database values
+    /// </summary>
+    /// <param name="id"></param>
     public void UpdateUI(int id)
     {
         int score = 0;
@@ -85,11 +90,10 @@ public class GameManager : MonoBehaviour
 
             while (reader.Read())
             {
-                id = reader.GetInt32(0);
                 if (id == 0)
-                    score = reader.GetInt32(id);
+                    score = reader.GetInt32(1);
                 else if (id == 1)
-                    score2 = reader.GetInt32(id);
+                    score2 = reader.GetInt32(1);
             }
 
             FinishDatabaseAction();
@@ -114,7 +118,13 @@ public class GameManager : MonoBehaviour
             winText.text = "PLAYER 2 WON.\nTo play again, please restart the application.";
     }
 
-    public void UpdateScores(int id, int score)
+    /// <summary>
+    /// Update scores in the database
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="score"></param>
+    /// <param name="firstTime"></param>
+    public void UpdateScores(int id, int score, bool firstTime)
     {
         using (IDbConnection dbConnection = new SqliteConnection(connection))
         {
@@ -122,8 +132,13 @@ public class GameManager : MonoBehaviour
 
             using (IDbCommand dbCmd = dbConnection.CreateCommand())
             {
-                string query = string.Format("UPDATE HighScore SET Score = \"{0}\" WHERE PlayerID = \"{1}\"", score, id);
-                //string query = string.Format("INSERT INTO HighScore(PlayerID, Score) VALUES(\"{0}\", \"{1}\")", id, score);
+                string query;
+
+                if (firstTime)
+                    query = string.Format("INSERT INTO HighScore(PlayerID, Score) VALUES(\"{0}\", \"{1}\")", id, score);
+                else
+                    query = string.Format("UPDATE HighScore SET Score = \"{0}\" WHERE PlayerID = \"{1}\"", score, id);
+
                 dbCmd.CommandText = query;
                 dbCmd.ExecuteScalar();
                 dbConnection.Close();
@@ -131,6 +146,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Delete scores from database
+    /// </summary>
     private void DeleteScore()
     {
         using (IDbConnection dbConnection = new SqliteConnection(connection))
@@ -154,10 +172,7 @@ public class GameManager : MonoBehaviour
 
         dbCommand.Dispose();
         dbCommand = null;
-
-        print("Finished");
     }
-
 
     private void OnDestroy()
     {

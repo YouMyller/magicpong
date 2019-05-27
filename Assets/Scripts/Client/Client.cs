@@ -106,13 +106,13 @@ public class Client : MonoBehaviour
                     if (i == 0)
                     {
                         gameManager.pOnePoints++;
-                        gameManager.UpdateScores(0, gameManager.pOnePoints);
+                        gameManager.UpdateScores(0, gameManager.pOnePoints, false); //Update scores in the database
                         gameManager.UpdateUI(0);
                     }
                     else
                     {
                         gameManager.pTwoPoints++;
-                        gameManager.UpdateScores(1, gameManager.pTwoPoints);
+                        gameManager.UpdateScores(1, gameManager.pTwoPoints, false); //Update scores in the database
                         gameManager.UpdateUI(1);
                     }
                 }
