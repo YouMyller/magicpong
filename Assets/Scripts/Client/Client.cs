@@ -3,6 +3,8 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using Mono.Data.Sqlite;
+using System.Data;
 
 public class Client : MonoBehaviour
 {
@@ -23,7 +25,6 @@ public class Client : MonoBehaviour
     public bool server;
 
     private string prevInput;
-
 
     private void Awake()
     {
@@ -66,14 +67,14 @@ public class Client : MonoBehaviour
 
                 if (i == 0 && tempInput == "MOVE")
                 {
-                    float posX = dataReader.GetFloat();            
+                    float posX = dataReader.GetFloat();
                     gameManager.playerOne.transform.position = new Vector3(posX, gameManager.playerOne.transform.position.y, gameManager.playerOne.transform.position.z);
                     float posZ = dataReader.GetFloat();
                     gameManager.playerOne.transform.position = new Vector3(gameManager.playerOne.transform.position.x, gameManager.playerOne.transform.position.y, posZ);
                 }
                 else if (i == 1 && tempInput == "MOVE")
                 {
-                    float posX = dataReader.GetFloat(); 
+                    float posX = dataReader.GetFloat();
                     gameManager.playerTwo.transform.position = new Vector3(posX, gameManager.playerTwo.transform.position.y, gameManager.playerTwo.transform.position.z);
                     float posZ = dataReader.GetFloat();
                     gameManager.playerTwo.transform.position = new Vector3(gameManager.playerTwo.transform.position.x, gameManager.playerTwo.transform.position.y, posZ);
@@ -100,21 +101,23 @@ public class Client : MonoBehaviour
                     player.newBall.transform.position = new Vector3(player.newBall.transform.position.x, player.newBall.transform.position.y, posZ);
                 }
 
-                if(tempInput == "UPDATE POINTS")
+                if (tempInput == "UPDATE POINTS")
                 {
-                    if(i == 0)
+                    if (i == 0)
                     {
                         gameManager.pOnePoints++;
+                        gameManager.UpdateScores(0, gameManager.pOnePoints);
                         gameManager.UpdateUI();
                     }
                     else
                     {
                         gameManager.pTwoPoints++;
+                        gameManager.UpdateScores(1, gameManager.pTwoPoints);
                         gameManager.UpdateUI();
                     }
                 }
 
-                if(tempInput == "WINNER")
+                if (tempInput == "WINNER")
                 {
                     gameManager.EndGame(i);
                     player.GameOver = true;
@@ -220,7 +223,7 @@ public class Client : MonoBehaviour
 
     public void DeclareWinner(string input, bool pOneWins)
     {
-        if(id == 0)
+        if (id == 0)
         {
             var writer = new NetDataWriter();
 
