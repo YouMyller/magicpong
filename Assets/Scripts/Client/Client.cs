@@ -24,7 +24,6 @@ public class Client : MonoBehaviour
 
     private string prevInput;
 
-    bool hasId;
 
     private void Awake()
     {
@@ -57,10 +56,9 @@ public class Client : MonoBehaviour
 
             i = dataReader.GetInt();
 
-            if (i == 0 || i == 1 && !hasId)
+            if (i == 0 || i == 1)
             {
                 id = i;
-                hasId = true;
             }
 
             if (player != null)

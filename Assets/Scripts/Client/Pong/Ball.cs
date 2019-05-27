@@ -22,9 +22,9 @@ public class Ball : MonoBehaviour
     void FixedUpdate()
     {
         if(dir == Direction.Up)
-            transform.Translate(Vector3.forward / 4);
+            transform.Translate(Vector3.forward / 8);
         else if(dir == Direction.Down)
-            transform.Translate(Vector3.back / 4);
+            transform.Translate(Vector3.back / 8);
     }
 
     private void OnCollisionEnter(Collision col)
