@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Threading;
 using LiteNetLib;
 using LiteNetLib.Utils;
@@ -11,9 +7,6 @@ namespace Server
 {
     class Server
     {
-        enum GameState { Start, Game, Win }
-        //If Win, send victory/loss messages
-
         enum BallDir { Up, Down }
 
         static void Main(string[] args)
@@ -21,7 +14,6 @@ namespace Server
             EventBasedNetListener listener = new EventBasedNetListener();
             NetManager server = new NetManager(listener);
 
-            GameState state = GameState.Start;
             BallDir dir = BallDir.Up;
 
             //Player one position
@@ -58,12 +50,11 @@ namespace Server
 
             listener.PeerConnectedEvent += peer =>
             {
-                Console.WriteLine("We got connection: {0}", peer.EndPoint);     // Show peer ip
+                Console.WriteLine("We got connection: {0}", peer.EndPoint);     
 
-                NetDataWriter writer = new NetDataWriter();                     // Create writer class         
-                writer.Put(peer.Id);                                 // Put some string
-                Console.WriteLine("Peers id: " + peer.Id);
-                peer.Send(writer, DeliveryMethod.ReliableOrdered);              // Send with reliability
+                NetDataWriter writer = new NetDataWriter();                           
+                writer.Put(peer.Id);                                
+                peer.Send(writer, DeliveryMethod.ReliableOrdered);              
                 writer.Reset();
             };
 
@@ -75,8 +66,7 @@ namespace Server
             listener.NetworkReceiveEvent += (fromPeer, dataReader, deliveryMethod) =>
             {
                 string input = dataReader.GetString();
-                bool collision = dataReader.GetBool();
-                //bool collisionHolder = false;
+                bool booleanHolder = dataReader.GetBool();
 
                 if (input == "SET POS")
                 {
@@ -109,11 +99,10 @@ namespace Server
 
                     if (fromPeer.Id == 0)
                     {
-                        pOneColl = collision;
+                        pOneColl = booleanHolder;
 
                         if (!pOneColl)
                         {
-                            //Calculate new position:
                             if (input == "A")
                                 pOnePosX -= .2f;
                             else if (input == "D")
@@ -129,11 +118,10 @@ namespace Server
                     }
                     else
                     {
-                        pTwoColl = collision;
+                        pTwoColl = booleanHolder;
 
                         if (!pTwoColl)
                         {
-                            //Calculate new position:
                             if (input == "A")
                                 pTwoPosX += .2f;
                             else if (input == "D")
@@ -153,7 +141,7 @@ namespace Server
                 if (input == "BALL MOVE")
                 {
                     NetDataWriter writer = new NetDataWriter();
-                    ballColl = collision;
+                    ballColl = booleanHolder;
                     string ballDirection = "";
 
                     if (ballColl)
@@ -183,13 +171,12 @@ namespace Server
                     writer.Put(ballPosZ);
                     server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
                     writer.Reset();
-                    Console.WriteLine("Sent ball information to client: " + ballDirection);
                 }
 
                 if(input == "POINT")
                 {
                     NetDataWriter writer = new NetDataWriter();
-                    bool pointForPlayerOne = collision;
+                    bool pointForPlayerOne = booleanHolder;
                     int awardedPlayer;
 
                     if(pointForPlayerOne)
@@ -205,7 +192,6 @@ namespace Server
 
                     writer.Put(awardedPlayer);
                     writer.Put("UPDATE POINTS");
-                    Console.WriteLine("Huzzah! A player was awarded with points: " + awardedPlayer);
                     server.SendToAll(writer, DeliveryMethod.ReliableOrdered);
                     writer.Reset();
                     dir = BallDir.Up;
@@ -214,19 +200,14 @@ namespace Server
                 if(input == "WINNER")
                 {
                     NetDataWriter writer = new NetDataWriter();
-                    bool pOneWins = collision;
+                    bool pOneWins = booleanHolder;
                     int winnerPlayer;
 
                     if(pOneWins)
-                    {
                         winnerPlayer = 0;
-                    }
                     else
-                    {
                         winnerPlayer = 1;
-                    }
 
-                    Console.WriteLine("Congartulations! You won, player " + winnerPlayer + "!");
                     writer.Put(winnerPlayer);
                     writer.Put("WINNER");
                     server.SendToAll(writer, DeliveryMethod.ReliableOrdered);

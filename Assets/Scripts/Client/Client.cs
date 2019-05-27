@@ -57,9 +57,7 @@ public class Client : MonoBehaviour
             i = dataReader.GetInt();
 
             if (i == 0 || i == 1)
-            {
                 id = i;
-            }
 
             if (player != null)
             {
@@ -134,29 +132,6 @@ public class Client : MonoBehaviour
     {
         client.Start();
         client.Connect(text.text /* host ip or name */, 2310 /* port */, "SomeConnectionKey" /* text key or NetDataWriter */);      //2310 is school port
-    }
-
-    /// <summary>
-    /// Sets most recent message text into chat input
-    /// </summary>
-    /// <param name="kakka"></param>
-    private void ChatInput(string kakka)
-    {
-        Text text = GameObject.Find("ChatFieldText").GetComponent<Text>();
-
-        text.text = kakka;
-    }
-
-    /// <summary>
-    /// Sends message to server
-    /// </summary>
-    public void SendMessage()
-    {
-        var writer = new NetDataWriter();
-        messageText = message.text;
-        writer.Put(messageText);
-        peer.Send(writer, DeliveryMethod.ReliableOrdered);
-        writer.Reset();
     }
 
     public void StartNewGame()
