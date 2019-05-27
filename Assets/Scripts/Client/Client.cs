@@ -24,6 +24,8 @@ public class Client : MonoBehaviour
 
     private string prevInput;
 
+    bool hasId;
+
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -55,8 +57,11 @@ public class Client : MonoBehaviour
 
             i = dataReader.GetInt();
 
-            if (i == 0 || i == 1)
+            if (i == 0 || i == 1 && !hasId)
+            {
                 id = i;
+                hasId = true;
+            }
 
             if (player != null)
             {
@@ -80,6 +85,7 @@ public class Client : MonoBehaviour
 
                 if (tempInput == "BALL UP")
                 {
+                    print("BALL UP");
                     player.newBall.GetComponent<Ball>().dir = Ball.Direction.Up;
 
                     float posX = dataReader.GetFloat();
@@ -89,6 +95,7 @@ public class Client : MonoBehaviour
                 }
                 else if (tempInput == "BALL DOWN")
                 {
+                    print("BALL DOWN");
                     player.newBall.GetComponent<Ball>().dir = Ball.Direction.Down;
 
                     float posX = dataReader.GetFloat();
@@ -190,6 +197,7 @@ public class Client : MonoBehaviour
 
     public void UpdateBallCoordinates(Vector3 pos, string input, bool collision)
     {
+        print(id);
         if (id == 0)
         {
             var writer = new NetDataWriter();
@@ -202,6 +210,7 @@ public class Client : MonoBehaviour
 
             peer.Send(writer, DeliveryMethod.ReliableOrdered);
             writer.Reset();
+            print("Ball collision at client: " + collision);
         }
     }
 

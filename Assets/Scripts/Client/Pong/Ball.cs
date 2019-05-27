@@ -44,6 +44,7 @@ public class Ball : MonoBehaviour
         }
         else
         {
+            print("WO HOO OH YEAH BALL COLLISION, HIGH FIVE BUDDY");
             this.collision = true;
             client.UpdateBallCoordinates(transform.position, "BALL MOVE", collision);
         }

@@ -123,8 +123,6 @@ namespace Server
                             writer.Put("MOVE");
                             writer.Put(pOnePosX);
                             writer.Put(pOnePosZ);
-
-                            Console.WriteLine("Player 1 brand new pos: " + pOnePosX + " " + pOnePosY + " " + pOnePosZ + " from peer: " + fromPeer.Id);
                         }
                         else
                             Console.WriteLine("Peer " + fromPeer.Id + " is colliding");
@@ -145,8 +143,6 @@ namespace Server
                             writer.Put("MOVE");
                             writer.Put(pTwoPosX);
                             writer.Put(pTwoPosZ);
-
-                            Console.WriteLine("Player 2 brand new pos: " + pTwoPosX + " " + pTwoPosY + " " + pTwoPosZ + " from peer: " + fromPeer.Id);
                         }
                     }
 
