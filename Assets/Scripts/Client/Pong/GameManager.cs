@@ -71,30 +71,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void UpdateUI()
+    public void UpdateUI(int id)
     {
-        int id;
         int score = 0;
-        int id2;
         int score2 = 0;
         using (IDbConnection dbConnection = new SqliteConnection(connection))
         {
             dbConnection.Open();
             dbCommand = dbConnection.CreateCommand();
-            string sqlQuery = string.Format("SELECT * FROM HighScore WHERE PlayerID = 0");
+            string sqlQuery = string.Format("SELECT * FROM HighScore WHERE PlayerID = \"{0}\"", id);
             dbCommand.CommandText = sqlQuery;
             reader = dbCommand.ExecuteReader();
 
             while (reader.Read())
             {
                 id = reader.GetInt32(0);
-                score = reader.GetInt32(0);
-                id2 = reader.GetInt32(1);
+                score = reader.GetInt32(1);
                 score2 = reader.GetInt32(1);
                 Debug.Log(score);
                 Debug.Log(score2);
             }
-            
+
             FinishDatabaseAction();
         }
 
@@ -125,7 +122,8 @@ public class GameManager : MonoBehaviour
 
             using (IDbCommand dbCmd = dbConnection.CreateCommand())
             {
-                string query = string.Format("INSERT INTO HighScore(PlayerID, Score) VALUES(\"{0}\", \"{1}\")", id, score);
+                string query = string.Format("UPDATE HighScore SET Score = \"{1}\" WHERE PlayerID= \"{0}\"", score, id);
+                //string query = string.Format("INSERT INTO HighScore(PlayerID, Score) VALUES(\"{0}\", \"{1}\")", id, score);
                 dbCmd.CommandText = query;
                 dbCmd.ExecuteScalar();
                 dbConnection.Close();

@@ -107,13 +107,13 @@ public class Client : MonoBehaviour
                     {
                         gameManager.pOnePoints++;
                         gameManager.UpdateScores(0, gameManager.pOnePoints);
-                        gameManager.UpdateUI();
+                        gameManager.UpdateUI(0);
                     }
                     else
                     {
                         gameManager.pTwoPoints++;
                         gameManager.UpdateScores(1, gameManager.pTwoPoints);
-                        gameManager.UpdateUI();
+                        gameManager.UpdateUI(1);
                     }
                 }
 
