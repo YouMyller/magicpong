@@ -86,10 +86,10 @@ public class GameManager : MonoBehaviour
             while (reader.Read())
             {
                 id = reader.GetInt32(0);
-                score = reader.GetInt32(1);
-                score2 = reader.GetInt32(1);
-                Debug.Log(score);
-                Debug.Log(score2);
+                if (id == 0)
+                    score = reader.GetInt32(id);
+                else if (id == 1)
+                    score2 = reader.GetInt32(id);
             }
 
             FinishDatabaseAction();
@@ -122,7 +122,7 @@ public class GameManager : MonoBehaviour
 
             using (IDbCommand dbCmd = dbConnection.CreateCommand())
             {
-                string query = string.Format("UPDATE HighScore SET Score = \"{1}\" WHERE PlayerID= \"{0}\"", score, id);
+                string query = string.Format("UPDATE HighScore SET Score = \"{0}\" WHERE PlayerID = \"{1}\"", score, id);
                 //string query = string.Format("INSERT INTO HighScore(PlayerID, Score) VALUES(\"{0}\", \"{1}\")", id, score);
                 dbCmd.CommandText = query;
                 dbCmd.ExecuteScalar();
